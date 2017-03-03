@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FAAEEF1F1E65B21400BFDB29 /* SignRecognition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAAEEF1D1E65B21400BFDB29 /* SignRecognition.cpp */; };
 		FAECDE461E5329CC00BCD1E7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAECDE451E5329CC00BCD1E7 /* main.cpp */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +24,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FAAEEF1D1E65B21400BFDB29 /* SignRecognition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SignRecognition.cpp; sourceTree = "<group>"; };
+		FAAEEF1E1E65B21400BFDB29 /* SignRecognition.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SignRecognition.hpp; sourceTree = "<group>"; };
 		FAECDE421E5329CC00BCD1E7 /* AIMotive Convolutional Network */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "AIMotive Convolutional Network"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAECDE451E5329CC00BCD1E7 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -58,6 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				FAECDE451E5329CC00BCD1E7 /* main.cpp */,
+				FAAEEF1D1E65B21400BFDB29 /* SignRecognition.cpp */,
+				FAAEEF1E1E65B21400BFDB29 /* SignRecognition.hpp */,
 			);
 			path = "AIMotive Convolutional Network";
 			sourceTree = "<group>";
@@ -119,6 +124,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAAEEF1F1E65B21400BFDB29 /* SignRecognition.cpp in Sources */,
 				FAECDE461E5329CC00BCD1E7 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -216,6 +222,16 @@
 		FAECDE4A1E5329CC00BCD1E7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"/Users/pilinszki-nagycsongor/Developer/bitmap",
+					"/usr/local/Cellar/eigen/3.3.2/**",
+					"/Users/pilinszki-nagycsongor/Developer/EasyBMP_1",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-I",
+					/usr/local/Cellar/eigen/3.3.2/,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -223,6 +239,16 @@
 		FAECDE4B1E5329CC00BCD1E7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"/Users/pilinszki-nagycsongor/Developer/bitmap",
+					"/usr/local/Cellar/eigen/3.3.2/**",
+					"/Users/pilinszki-nagycsongor/Developer/EasyBMP_1",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-I",
+					/usr/local/Cellar/eigen/3.3.2/,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -246,6 +272,7 @@
 				FAECDE4B1E5329CC00BCD1E7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

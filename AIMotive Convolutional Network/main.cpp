@@ -8,8 +8,15 @@
 
 #include <iostream>
 
+#include "SignRecognition.hpp"
+
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+    
+    SignRecognition signRecognition;
+    signRecognition.loadImage(1, 0);
+    
     return 0;
 }
+
+
+
