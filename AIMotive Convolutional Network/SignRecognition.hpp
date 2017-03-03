@@ -26,25 +26,12 @@
 #define FILTER_1_FLATTEN FILTER_1_HEIGHT * FILTER_1_WIDTH * FILTER_1_DEPTH
 #define FILTER_1_NUMBER 10
 
-using std::cout;
-using std::endl;
-using std::string;
-using std::to_string;
-using Eigen::MatrixXf;
-
 #endif /* SignRecognition_hpp */
 
 class SignRecognition {
-    
 private:
-    unsigned int*** inputImage;
-    MatrixXf imageFlattenMatrix;
-    MatrixXf filter1;
-    MatrixXf output;
+    
 public:
     SignRecognition();
     ~SignRecognition();
-    void loadImage(unsigned int signClass, unsigned int imageNumber);
-    unsigned int numberOfDigits(unsigned int number);
-    void flattenImage();
 };

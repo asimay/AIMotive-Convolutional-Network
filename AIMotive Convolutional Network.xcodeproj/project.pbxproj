@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		FAAEEF1F1E65B21400BFDB29 /* SignRecognition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAAEEF1D1E65B21400BFDB29 /* SignRecognition.cpp */; };
 		FAECDE461E5329CC00BCD1E7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAECDE451E5329CC00BCD1E7 /* main.cpp */; };
+		FAFE0C8B1E69BA2A0034A5DD /* ImageLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAFE0C891E69BA2A0034A5DD /* ImageLoader.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +29,8 @@
 		FAAEEF1E1E65B21400BFDB29 /* SignRecognition.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SignRecognition.hpp; sourceTree = "<group>"; };
 		FAECDE421E5329CC00BCD1E7 /* AIMotive Convolutional Network */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "AIMotive Convolutional Network"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAECDE451E5329CC00BCD1E7 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		FAFE0C891E69BA2A0034A5DD /* ImageLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageLoader.cpp; sourceTree = "<group>"; };
+		FAFE0C8A1E69BA2A0034A5DD /* ImageLoader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ImageLoader.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +66,8 @@
 				FAECDE451E5329CC00BCD1E7 /* main.cpp */,
 				FAAEEF1D1E65B21400BFDB29 /* SignRecognition.cpp */,
 				FAAEEF1E1E65B21400BFDB29 /* SignRecognition.hpp */,
+				FAFE0C891E69BA2A0034A5DD /* ImageLoader.cpp */,
+				FAFE0C8A1E69BA2A0034A5DD /* ImageLoader.hpp */,
 			);
 			path = "AIMotive Convolutional Network";
 			sourceTree = "<group>";
@@ -126,6 +131,7 @@
 			files = (
 				FAAEEF1F1E65B21400BFDB29 /* SignRecognition.cpp in Sources */,
 				FAECDE461E5329CC00BCD1E7 /* main.cpp in Sources */,
+				FAFE0C8B1E69BA2A0034A5DD /* ImageLoader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

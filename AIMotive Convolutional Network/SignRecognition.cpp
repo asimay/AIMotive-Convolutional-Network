@@ -9,31 +9,12 @@
 #include "SignRecognition.hpp"
 
 SignRecognition::SignRecognition() {
-    imageFlattenMatrix = MatrixXf::Ones(2704,27);
-    filter1 = MatrixXf::Ones(27, 10);
-    output = imageFlattenMatrix * filter1;
-    cout << output.rows() << " " << output.cols() << endl;
-    cout << output << endl;
-    inputImage = new unsigned int**[IMAGE_WIDTH];
-    for(unsigned int x = 0; x < IMAGE_WIDTH; x++) {
-        inputImage[x] = new unsigned int*[IMAGE_HEIGHT];
-        for (unsigned int y = 0; y < IMAGE_HEIGHT; y++) {
-            inputImage[x][y] = new unsigned int[IMAGE_HEIGHT];
-        }
-    }
 }
 
 SignRecognition::~SignRecognition() {
-    for (unsigned int i = 0; i < IMAGE_HEIGHT; i++) {
-        for (unsigned int j = 0; j < IMAGE_WIDTH; j++) {
-            delete [] inputImage[i][j];
-        }
-        delete [] inputImage[i];
-    }
-    delete [] inputImage;
 }
 
-void SignRecognition::loadImage(unsigned int signClass, unsigned int imageNumber) {
+/*void SignRecognition::loadImage(unsigned int signClass, unsigned int imageNumber) {
     
     string filePath = FOLDER_PATH;
     filePath += to_string(signClass);
@@ -98,4 +79,5 @@ void SignRecognition::flattenImage() {
         }
     }
 }
+ */
 
