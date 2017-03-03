@@ -13,8 +13,7 @@
 #include <iostream>
 #include <Eigen>
 
-#define FOLDER_PATH "/Users/pilinszki-nagycsongor/Developer/train-52x52/"
-#define HEADER_LENGTH 138
+
 
 #define IMAGE_HEIGHT 52
 #define IMAGE_WIDTH 52

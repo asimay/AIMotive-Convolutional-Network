@@ -14,6 +14,7 @@
 int main(int argc, const char * argv[]) {
     
     ImageLoader imageLoader = ImageLoader();
+    imageLoader.loadImages();
     
     return 0;
 }
