@@ -9,11 +9,12 @@
 #include <iostream>
 
 #include "SignRecognition.hpp"
+#include "ImageLoader.hpp"
 
 int main(int argc, const char * argv[]) {
     
-    SignRecognition signRecognition;
-    signRecognition.loadImage(1, 0);
+    ImageLoader imageLoader = ImageLoader();
+    imageLoader.loadImages();
     
     return 0;
 }
