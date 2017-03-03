@@ -19,8 +19,10 @@ using std::endl;
 
 class ImageLoader {
 private:
-    unsigned int***** images;
+    unsigned char***** images;
+    unsigned char info[138];
 public:
     ImageLoader();
     ~ImageLoader();
+    void loadImages();
 };

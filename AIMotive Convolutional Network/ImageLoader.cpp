@@ -15,15 +15,15 @@
 #define NUMBER_OF_COLORS 3
 
 ImageLoader::ImageLoader() {
-    images = new unsigned int****[NUMBER_OF_CLASSES];
+    images = new unsigned char****[NUMBER_OF_CLASSES];
     for(unsigned int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {         // 1-12
-        images[classNumber] = new unsigned int***[NUMBER_OF_IMAGES];
+        images[classNumber] = new unsigned char***[NUMBER_OF_IMAGES];
         for (unsigned int imageNumber = 0; imageNumber < NUMBER_OF_IMAGES; imageNumber++) {     // 0-4999
-            images[classNumber][imageNumber] = new unsigned int**[IMAGE_WIDTH];
+            images[classNumber][imageNumber] = new unsigned char**[IMAGE_WIDTH];
             for (unsigned int x = 0; x < IMAGE_WIDTH; x++) {                                    // 0-51
-                images[classNumber][imageNumber][x] = new unsigned int*[IMAGE_HEIGHT];
+                images[classNumber][imageNumber][x] = new unsigned char*[IMAGE_HEIGHT];
                 for (unsigned int y = 0; y < IMAGE_HEIGHT; y++) {                               // 0-51
-                    images[classNumber][imageNumber][x][y] = new unsigned int[NUMBER_OF_COLORS];
+                    images[classNumber][imageNumber][x][y] = new unsigned char[NUMBER_OF_COLORS];
                 }
             }
         }
