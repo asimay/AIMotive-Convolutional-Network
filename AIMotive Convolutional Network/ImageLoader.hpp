@@ -17,8 +17,7 @@
 
 #define NUMBER_OF_CLASSES 12
 #define NUMBER_OF_IMAGES 5000
-#define IMAGE_WIDTH 52
-#define IMAGE_HEIGHT 52
+#define IMAGE_SIZE 52
 #define NUMBER_OF_COLORS 3
 
 #define FOLDER_PATH "/Users/pilinszki-nagycsongor/Developer/train-52x52/"
@@ -32,7 +31,7 @@ using std::to_string;
 class ImageLoader {
 private:
     unsigned char***** images;
-    unsigned char imagePixels[IMAGE_WIDTH * IMAGE_HEIGHT * NUMBER_OF_COLORS];
+    unsigned char imagePixels[IMAGE_SIZE * IMAGE_SIZE * NUMBER_OF_COLORS];
 public:
     ImageLoader();
     ~ImageLoader();
