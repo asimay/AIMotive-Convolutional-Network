@@ -14,10 +14,10 @@ ImageLoader::ImageLoader() {
     for(unsigned int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {         // 1-12
         images[classNumber] = new unsigned char***[NUMBER_OF_IMAGES];
         for (unsigned int imageNumber = 0; imageNumber < NUMBER_OF_IMAGES; imageNumber++) {     // 0-4999
-            images[classNumber][imageNumber] = new unsigned char**[IMAGE_WIDTH];
-            for (unsigned int x = 0; x < IMAGE_WIDTH; x++) {                                    // 0-51
-                images[classNumber][imageNumber][x] = new unsigned char*[IMAGE_HEIGHT];
-                for (unsigned int y = 0; y < IMAGE_HEIGHT; y++) {                               // 0-51
+            images[classNumber][imageNumber] = new unsigned char**[IMAGE_SIZE];
+            for (unsigned int x = 0; x < IMAGE_SIZE; x++) {                                    // 0-51
+                images[classNumber][imageNumber][x] = new unsigned char*[IMAGE_SIZE];
+                for (unsigned int y = 0; y < IMAGE_SIZE; y++) {                               // 0-51
                     images[classNumber][imageNumber][x][y] = new unsigned char[NUMBER_OF_COLORS];
                 }
             }
@@ -29,8 +29,8 @@ ImageLoader::ImageLoader() {
 ImageLoader::~ImageLoader() {
     for (unsigned int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {
         for (unsigned int imageNumber = 0; imageNumber < NUMBER_OF_IMAGES; imageNumber++) {
-            for (unsigned int x = 0; x < IMAGE_WIDTH; x++) {
-                for (unsigned int y = 0; y < IMAGE_HEIGHT; y++) {
+            for (unsigned int x = 0; x < IMAGE_SIZE; x++) {
+                for (unsigned int y = 0; y < IMAGE_SIZE; y++) {
                     delete [] images[classNumber][imageNumber][x][y];
                 }
                 delete [] images[classNumber][imageNumber][x];
@@ -65,12 +65,12 @@ void ImageLoader::loadImage(unsigned int classNumber, unsigned int imageNumber) 
     unsigned char fileHeader[HEADER_LENGTH];
     fread(fileHeader, sizeof(unsigned char), HEADER_LENGTH, inputImage);
     
-    fread(imagePixels, sizeof(unsigned char), IMAGE_WIDTH * IMAGE_HEIGHT * NUMBER_OF_COLORS, inputImage);
+    fread(imagePixels, sizeof(unsigned char), IMAGE_SIZE * IMAGE_SIZE * NUMBER_OF_COLORS, inputImage);
     
-    for (unsigned int x = 0; x < IMAGE_WIDTH; x++) {
-        for (unsigned int y = 0; y < IMAGE_HEIGHT; y++) {
+    for (unsigned int x = 0; x < IMAGE_SIZE; x++) {
+        for (unsigned int y = 0; y < IMAGE_SIZE; y++) {
             for (unsigned int color = 0; color < NUMBER_OF_COLORS; color++) {
-                images[classNumber-1][imageNumber][x][y][color] = imagePixels[x * NUMBER_OF_COLORS + y * IMAGE_WIDTH * NUMBER_OF_COLORS + color];
+                images[classNumber-1][imageNumber][x][y][color] = imagePixels[x * NUMBER_OF_COLORS + y * IMAGE_SIZE * NUMBER_OF_COLORS + color];
             }
         }
     }
