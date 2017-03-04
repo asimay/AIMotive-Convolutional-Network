@@ -15,7 +15,7 @@
 
 #endif /* ImageLoader_hpp */
 
-#define NUMBER_OF_CLASSES 12
+#define NUMBER_OF_CLASSES 1
 #define NUMBER_OF_IMAGES 5000
 #define IMAGE_WIDTH 52
 #define IMAGE_HEIGHT 52
@@ -40,4 +40,5 @@ public:
     void loadImage(unsigned int, unsigned int);
     string getImagePath(unsigned int, unsigned int);
     unsigned int numberOfDigits(unsigned int);
+    unsigned char*** getImageArray(unsigned int, unsigned int);
 };

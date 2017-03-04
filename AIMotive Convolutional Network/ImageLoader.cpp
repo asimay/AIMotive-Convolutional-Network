@@ -105,3 +105,7 @@ unsigned int ImageLoader::numberOfDigits(unsigned int number) {
     }
     return numberOfDigits;
 }
+
+unsigned char*** ImageLoader::getImageArray(unsigned int classNumber, unsigned int imageNumber) {
+    return images[classNumber-1][imageNumber];
+}
