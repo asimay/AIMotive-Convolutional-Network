@@ -28,14 +28,16 @@ private:
     unsigned int stride;
     
     float*** inputArray;
+    float*** outputArray;
     
     MatrixXf inputMatrix;
     MatrixXf filterMatrix;
+    MatrixXf outputMatrix;
 public:
     ConvolutionLayer(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
     ~ConvolutionLayer();
     void loadInputArray(float***);
     void flattenInputArray();
-    void loadImageArray(unsigned char***);
-    void normalizeInputArray();
+    void forwardConvolution();
+    void reshapeOutputMatrix();
 };

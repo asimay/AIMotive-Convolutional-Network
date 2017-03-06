@@ -10,15 +10,15 @@
 
 
 ImageLoader::ImageLoader() {
-    images = new unsigned char****[NUMBER_OF_CLASSES];
+    images = new float****[NUMBER_OF_CLASSES];
     for(unsigned int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {         // 1-12
-        images[classNumber] = new unsigned char***[NUMBER_OF_IMAGES];
+        images[classNumber] = new float***[NUMBER_OF_IMAGES];
         for (unsigned int imageNumber = 0; imageNumber < NUMBER_OF_IMAGES; imageNumber++) {     // 0-4999
-            images[classNumber][imageNumber] = new unsigned char**[IMAGE_WIDTH];
+            images[classNumber][imageNumber] = new float**[IMAGE_WIDTH];
             for (unsigned int x = 0; x < IMAGE_WIDTH; x++) {                                    // 0-51
-                images[classNumber][imageNumber][x] = new unsigned char*[IMAGE_HEIGHT];
+                images[classNumber][imageNumber][x] = new float*[IMAGE_HEIGHT];
                 for (unsigned int y = 0; y < IMAGE_HEIGHT; y++) {                               // 0-51
-                    images[classNumber][imageNumber][x][y] = new unsigned char[NUMBER_OF_COLORS];
+                    images[classNumber][imageNumber][x][y] = new float[NUMBER_OF_COLORS];
                 }
             }
         }
@@ -70,7 +70,7 @@ void ImageLoader::loadImage(unsigned int classNumber, unsigned int imageNumber) 
     for (unsigned int x = 0; x < IMAGE_WIDTH; x++) {
         for (unsigned int y = 0; y < IMAGE_HEIGHT; y++) {
             for (unsigned int color = 0; color < NUMBER_OF_COLORS; color++) {
-                images[classNumber-1][imageNumber][x][y][color] = imagePixels[x * NUMBER_OF_COLORS + y * IMAGE_WIDTH * NUMBER_OF_COLORS + color];
+                images[classNumber-1][imageNumber][x][y][color] = (float) imagePixels[x * NUMBER_OF_COLORS + y * IMAGE_WIDTH * NUMBER_OF_COLORS + color];
             }
         }
     }
@@ -106,6 +106,21 @@ unsigned int ImageLoader::numberOfDigits(unsigned int number) {
     return numberOfDigits;
 }
 
-unsigned char*** ImageLoader::getImageArray(unsigned int classNumber, unsigned int imageNumber) {
+float*** ImageLoader::getImageArray(unsigned int classNumber, unsigned int imageNumber) {
     return images[classNumber-1][imageNumber];
+}
+
+void ImageLoader::normalizeImages() {
+    for (unsigned int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {
+        for (unsigned int imageNumber = 0; imageNumber < NUMBER_OF_IMAGES; imageNumber++) {
+            for (unsigned int x = 0; x < IMAGE_WIDTH; x++) {
+                for (unsigned int y = 0; y < IMAGE_HEIGHT; y++) {
+                    for (unsigned int depth = 0; depth < NUMBER_OF_COLORS; depth++) {
+                        images[classNumber][imageNumber][x][y][depth] -= 128.0;
+                        images[classNumber][imageNumber][x][y][depth] /= 128.0;
+                    }
+                }
+            }
+        }
+    }
 }

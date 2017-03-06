@@ -31,7 +31,7 @@ using std::to_string;
 
 class ImageLoader {
 private:
-    unsigned char***** images;
+    float***** images;
     unsigned char imagePixels[IMAGE_WIDTH * IMAGE_HEIGHT * NUMBER_OF_COLORS];
 public:
     ImageLoader();
@@ -40,5 +40,6 @@ public:
     void loadImage(unsigned int, unsigned int);
     string getImagePath(unsigned int, unsigned int);
     unsigned int numberOfDigits(unsigned int);
-    unsigned char*** getImageArray(unsigned int, unsigned int);
+    float*** getImageArray(unsigned int, unsigned int);
+    void normalizeImages();
 };

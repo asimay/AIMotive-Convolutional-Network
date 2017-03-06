@@ -16,10 +16,10 @@ int main(int argc, const char * argv[]) {
     
     ImageLoader imageLoader = ImageLoader();
     imageLoader.loadImages();
+    imageLoader.normalizeImages();
     
     ConvolutionLayer convLayer(52, 3, 7, 10, 1);
-    convLayer.loadImageArray(imageLoader.getImageArray(1, 0));
-    convLayer.normalizeInputArray();
+    convLayer.loadInputArray(imageLoader.getImageArray(1, 0));
     convLayer.flattenInputArray();
     
     

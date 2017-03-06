@@ -9,11 +9,20 @@
 #include "ConvolutionLayer.hpp"
 
 ConvolutionLayer::ConvolutionLayer(unsigned int inputSize, unsigned int inputDepth, unsigned int filterSize, unsigned int filterNumber, unsigned int stride) {
-    this->inputArray = new float**[inputSize];
+    inputArray = new float**[inputSize];
     for (unsigned int x = 0; x < inputSize; x++) {
-        this->inputArray[x] = new float*[inputSize];
+        inputArray[x] = new float*[inputSize];
         for (unsigned int y = 0; y < inputSize; y++) {
-            this->inputArray[x][y] = new float[inputDepth];
+            inputArray[x][y] = new float[inputDepth];
+        }
+    }
+    
+    unsigned int outputSize = inputSize/stride;
+    this->outputArray = new float**[outputSize];
+    for (unsigned int x = 0; x < outputSize; x++) {
+        this->outputArray[x] = new float*[outputSize];
+        for (unsigned int y = 0; y < outputSize; y++) {
+            outputArray[x][y] = new float[filterNumber];
         }
     }
     this->inputSize = inputSize;
@@ -69,22 +78,16 @@ void ConvolutionLayer::flattenInputArray() {
     }
 }
 
-void ConvolutionLayer::loadImageArray(unsigned char*** inputArray) {
-    for (unsigned int x = 0; x < inputSize; x++) {
-        for (unsigned int y = 0; y < inputSize; y++) {
-            for (unsigned int depth = 0; depth < inputDepth; depth++) {
-                this->inputArray[x][y][depth] = (float)inputArray[x][y][depth];
-            }
-        }
-    }
+void ConvolutionLayer::forwardConvolution() {
+    outputMatrix = inputMatrix * filterMatrix;
 }
 
-void ConvolutionLayer::normalizeInputArray() {
-    for (unsigned int x = 0; x < inputSize; x++) {
-        for (unsigned int y = 0; y < inputSize; y++) {
-            for (unsigned int depth = 0; depth < inputDepth; depth++) {
-                this->inputArray[x][y][depth] -= 128.0;
-                this->inputArray[x][y][depth] /= 128.0;
+void ConvolutionLayer::reshapeOutputMatrix() {
+    unsigned int outputSize = inputSize/stride;
+    for (unsigned int x = 0; x < outputSize; x++) {
+        for (unsigned int y = 0; y < outputSize; y++) {
+            for (unsigned int depth = 0; depth < filterNumber; depth ++) {
+                outputArray[x][y][depth] = outputMatrix(x*outputSize + y, depth);
             }
         }
     }
