@@ -8,54 +8,54 @@
 
 #include "ImageLoader.hpp"
 
+#define HEADER_LENGTH 138
 
-ImageLoader::ImageLoader() {
-    images = new float****[NUMBER_OF_CLASSES];
-    for(unsigned int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {         // 1-12
-        images[classNumber] = new float***[NUMBER_OF_IMAGES];
-        for (unsigned int imageNumber = 0; imageNumber < NUMBER_OF_IMAGES; imageNumber++) {     // 0-4999
-            images[classNumber][imageNumber] = new float**[IMAGE_WIDTH];
-            for (unsigned int x = 0; x < IMAGE_WIDTH; x++) {                                    // 0-51
-                images[classNumber][imageNumber][x] = new float*[IMAGE_HEIGHT];
-                for (unsigned int y = 0; y < IMAGE_HEIGHT; y++) {                               // 0-51
-                    images[classNumber][imageNumber][x][y] = new float[NUMBER_OF_COLORS];
-                }
-            }
-        }
-    }
-    cout << "ImageLoader created" << endl;
+ImageLoader::ImageLoader(std::string folderPath, unsigned int numberOfClasses, unsigned int numberOfImages, unsigned int imageSize, unsigned int numberOfColors) {
+    this->folderPath = folderPath;
+    this->numberOfClasses = numberOfClasses;
+    this->numberOfImages = numberOfImages;
+    this->imageSize = imageSize;
+    this->numberOfColors = numberOfColors;
+    imageMatrices = std::vector<std::vector<Eigen::MatrixXf>>(numberOfClasses, std::vector<Eigen::MatrixXf>(numberOfImages, Eigen::MatrixXf(imageSize*imageSize, numberOfColors)));
+    
+    loadImages();
 }
 
 ImageLoader::~ImageLoader() {
-    for (unsigned int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {
-        for (unsigned int imageNumber = 0; imageNumber < NUMBER_OF_IMAGES; imageNumber++) {
-            for (unsigned int x = 0; x < IMAGE_WIDTH; x++) {
-                for (unsigned int y = 0; y < IMAGE_HEIGHT; y++) {
-                    delete [] images[classNumber][imageNumber][x][y];
-                }
-                delete [] images[classNumber][imageNumber][x];
-            }
-            delete [] images[classNumber][imageNumber];
-        }
-        delete [] images[classNumber];
-    }
-    delete [] images;
-    cout << "ImageLoader deleted" << endl;
+    
+}
+
+Eigen::MatrixXf* ImageLoader::getOutput() {
+    return &imageMatrices[0][0];
+}
+
+unsigned int ImageLoader::getOutputSize() {
+    return imageSize;
+}
+
+unsigned int ImageLoader::getOutputDepth() {
+    return numberOfColors;
+}
+
+void ImageLoader::setPreviousLayer(Layer* previousLayer) {
+    
+}
+
+void ImageLoader::setNextLayer(Layer* nextLayer) {
+    this->nextLayer = nextLayer;
 }
 
 void ImageLoader::loadImages() {
-    for (unsigned int classNumber = 1; classNumber <= NUMBER_OF_CLASSES; classNumber++) {
-        for (unsigned int imageNumber = 0; imageNumber < NUMBER_OF_IMAGES; imageNumber++) {
-            loadImage(classNumber, imageNumber);
-            cout << "Class: " << classNumber << " Image: " << imageNumber << " LOADED" << endl;
+    for (unsigned int classNumber = 0; classNumber < numberOfClasses; classNumber++) {
+        for (unsigned int imageNumber = 0; imageNumber < numberOfImages; imageNumber++) {
+            loadImage(folderPath, classNumber + 1, imageNumber);
         }
+        std::cout << "Class " << classNumber + 1 << " loaded" << std::endl;
     }
 }
 
-void ImageLoader::loadImage(unsigned int classNumber, unsigned int imageNumber) {
-    string imagePath = getImagePath(classNumber, imageNumber);
-    
-    cout << imagePath << endl;
+void ImageLoader::loadImage(std::string folderPath, unsigned int classNumber, unsigned int imageNumber) {
+    std::string imagePath = getImagePath(folderPath, classNumber, imageNumber);
     
     FILE* inputImage = fopen(imagePath.c_str(), "rb");
     
@@ -65,12 +65,13 @@ void ImageLoader::loadImage(unsigned int classNumber, unsigned int imageNumber) 
     unsigned char fileHeader[HEADER_LENGTH];
     fread(fileHeader, sizeof(unsigned char), HEADER_LENGTH, inputImage);
     
-    fread(imagePixels, sizeof(unsigned char), IMAGE_WIDTH * IMAGE_HEIGHT * NUMBER_OF_COLORS, inputImage);
+    unsigned char imagePixels[imageSize * imageSize * numberOfColors];
+    fread(imagePixels, sizeof(unsigned char), imageSize * imageSize * numberOfColors, inputImage);
     
-    for (unsigned int x = 0; x < IMAGE_WIDTH; x++) {
-        for (unsigned int y = 0; y < IMAGE_HEIGHT; y++) {
-            for (unsigned int color = 0; color < NUMBER_OF_COLORS; color++) {
-                images[classNumber-1][imageNumber][x][y][color] = (float) imagePixels[x * NUMBER_OF_COLORS + y * IMAGE_WIDTH * NUMBER_OF_COLORS + color];
+    for (unsigned int x = 0; x < imageSize; x++) {
+        for (unsigned int y = 0; y < imageSize; y++) {
+            for (unsigned int color = 0; color < numberOfColors; color++) {
+                imageMatrices[classNumber - 1][imageNumber](flatten2DCoordinates(x, y, imageSize), color) = normalize ((float) imagePixels[flatten3DCoordinates(x, y, color, imageSize, numberOfColors)]);
             }
         }
     }
@@ -78,11 +79,11 @@ void ImageLoader::loadImage(unsigned int classNumber, unsigned int imageNumber) 
     fclose(inputImage);
 }
 
-string ImageLoader::getImagePath(unsigned int classNumber, unsigned int imageNumber) {
-    string imagePath = FOLDER_PATH;
-    imagePath += to_string(classNumber);
+std::string ImageLoader::getImagePath(std::string folderPath, unsigned int classNumber, unsigned int imageNumber) {
+    std::string imagePath = folderPath;
+    imagePath += std::to_string(classNumber);
     imagePath += "/";
-    imagePath += to_string(classNumber);
+    imagePath += std::to_string(classNumber);
     imagePath += "_";
     
     unsigned int paddingZeros = 4 - numberOfDigits(imageNumber);
@@ -90,7 +91,7 @@ string ImageLoader::getImagePath(unsigned int classNumber, unsigned int imageNum
         imagePath += "0";
     }
     
-    imagePath += to_string(imageNumber);
+    imagePath += std::to_string(imageNumber);
     imagePath += ".bmp";
     
     return imagePath;
@@ -106,21 +107,6 @@ unsigned int ImageLoader::numberOfDigits(unsigned int number) {
     return numberOfDigits;
 }
 
-float*** ImageLoader::getImageArray(unsigned int classNumber, unsigned int imageNumber) {
-    return images[classNumber-1][imageNumber];
-}
-
-void ImageLoader::normalizeImages() {
-    for (unsigned int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {
-        for (unsigned int imageNumber = 0; imageNumber < NUMBER_OF_IMAGES; imageNumber++) {
-            for (unsigned int x = 0; x < IMAGE_WIDTH; x++) {
-                for (unsigned int y = 0; y < IMAGE_HEIGHT; y++) {
-                    for (unsigned int depth = 0; depth < NUMBER_OF_COLORS; depth++) {
-                        images[classNumber][imageNumber][x][y][depth] -= 128.0;
-                        images[classNumber][imageNumber][x][y][depth] /= 128.0;
-                    }
-                }
-            }
-        }
-    }
+float ImageLoader::normalize(float number) {
+    return (number - 128.0) / 128.0;
 }

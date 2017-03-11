@@ -9,24 +9,6 @@
 #ifndef SignRecognition_hpp
 #define SignRecognition_hpp
 
-#include <stdio.h>
-#include <iostream>
-#include <Eigen>
-
-
-
-#define IMAGE_HEIGHT 52
-#define IMAGE_WIDTH 52
-#define IMAGE_DEPTH 3
-
-#define FILTER_1_HEIGHT 3
-#define FILTER_1_WIDTH 3
-#define FILTER_1_DEPTH 3
-#define FILTER_1_FLATTEN FILTER_1_HEIGHT * FILTER_1_WIDTH * FILTER_1_DEPTH
-#define FILTER_1_NUMBER 10
-
-#endif /* SignRecognition_hpp */
-
 class SignRecognition {
 private:
     
@@ -34,3 +16,5 @@ public:
     SignRecognition();
     ~SignRecognition();
 };
+
+#endif /* SignRecognition_hpp */

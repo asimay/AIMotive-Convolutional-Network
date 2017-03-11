@@ -9,35 +9,45 @@
 #ifndef ConvolutionLayer_hpp
 #define ConvolutionLayer_hpp
 
-#include <stdio.h>
 #include <Eigen>
+#include "Layer.hpp"
 #include <iostream>
 
-#endif /* ConvolutionLayer_hpp */
-
-using Eigen::MatrixXf;
-using std::cout;
-using std::endl;
-
-class ConvolutionLayer {
+class ConvolutionLayer : public Layer {
 private:
-    unsigned int inputSize;
-    unsigned int inputDepth;
+    Layer* previousLayer;
+    Layer* nextLayer;
+    
+    unsigned int imageSize;
     unsigned int filterSize;
     unsigned int filterNumber;
     unsigned int stride;
     
-    float*** inputArray;
-    float*** outputArray;
+    Eigen::MatrixXf inputMatrix;
+    Eigen::MatrixXf filterMatrix;
+    Eigen::MatrixXf outputMatrix;
+    Eigen::MatrixXf deltaInputMatrix;
+    Eigen::MatrixXf deltaOutputMatrix;
     
-    MatrixXf inputMatrix;
-    MatrixXf filterMatrix;
-    MatrixXf outputMatrix;
 public:
-    ConvolutionLayer(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
+    ConvolutionLayer(unsigned int filterSize, unsigned int filterNumber, unsigned int stride);
     ~ConvolutionLayer();
-    void loadInputArray(float***);
-    void flattenInputArray();
+    
+    Eigen::MatrixXf* getOutput();
+    unsigned int getOutputSize();
+    unsigned int getOutputDepth();
+    void setPreviousLayer(Layer* previousLayer);
+    void setNextLayer(Layer* nextLayer);
+    
     void forwardConvolution();
-    void reshapeOutputMatrix();
+    Eigen::MatrixXf getFilterMatrix();
+    Eigen::MatrixXf getInputMatrix();
+    
+    static Eigen::MatrixXf flattenMatrix(Eigen::MatrixXf* inputMatrix, unsigned int inputSize, unsigned int inputDepth, unsigned int filterSize);
+    static Eigen::VectorXf flattenReceptiveField(Eigen::MatrixXf* inputMatrix, unsigned int inputSize, unsigned int inputDepth, unsigned int inputX, unsigned int inputY, unsigned int filterSize);
+    static void addBiasColumn(Eigen::MatrixXf* inputMatrix);
 };
+
+
+
+#endif /* ConvolutionLayer_hpp */

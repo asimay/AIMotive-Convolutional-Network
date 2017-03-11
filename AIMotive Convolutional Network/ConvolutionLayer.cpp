@@ -8,87 +8,104 @@
 
 #include "ConvolutionLayer.hpp"
 
-ConvolutionLayer::ConvolutionLayer(unsigned int inputSize, unsigned int inputDepth, unsigned int filterSize, unsigned int filterNumber, unsigned int stride) {
-    inputArray = new float**[inputSize];
-    for (unsigned int x = 0; x < inputSize; x++) {
-        inputArray[x] = new float*[inputSize];
-        for (unsigned int y = 0; y < inputSize; y++) {
-            inputArray[x][y] = new float[inputDepth];
-        }
-    }
+ConvolutionLayer::ConvolutionLayer(unsigned int filterSize, unsigned int filterNumber, unsigned int stride) {
     
-    unsigned int outputSize = inputSize/stride;
-    this->outputArray = new float**[outputSize];
-    for (unsigned int x = 0; x < outputSize; x++) {
-        this->outputArray[x] = new float*[outputSize];
-        for (unsigned int y = 0; y < outputSize; y++) {
-            outputArray[x][y] = new float[filterNumber];
-        }
-    }
-    this->inputSize = inputSize;
-    this->inputDepth = inputDepth;
+    previousLayer = NULL;
+    nextLayer = NULL;
+    
     this->filterSize = filterSize;
     this->filterNumber = filterNumber;
     this->stride = stride;
     
-    unsigned int inputMatrixSizes[2] = {(inputSize/stride)*(inputSize/stride), filterSize*filterSize*inputDepth};
-    inputMatrix = MatrixXf(inputMatrixSizes[0], inputMatrixSizes[1]);
-    filterMatrix = MatrixXf::Random(inputMatrixSizes[1], filterNumber);
+    this->inputMatrix = Eigen::MatrixXf();
+    this->filterMatrix = Eigen::MatrixXf();
+    this->outputMatrix = Eigen::MatrixXf();
+    this->deltaInputMatrix = Eigen::MatrixXf();
+    this->deltaOutputMatrix = Eigen::MatrixXf();
+
 }
 
 ConvolutionLayer::~ConvolutionLayer() {
-    for (unsigned int x = 0; x < inputSize; x++) {
-        for (unsigned int y = 0; y < inputSize; y++) {
-            delete [] inputArray[x][y];
-        }
-        delete [] inputArray[x];
-    }
-    delete [] inputArray;
+    
 }
 
-void ConvolutionLayer::loadInputArray(float*** inputArray) {
-    for (unsigned int x = 0; x < inputSize; x++) {
-        for (unsigned int y = 0; y < inputSize; y++) {
-            for (unsigned int depth = 0; depth < inputDepth; depth++) {
-                this->inputArray[x][y][depth] = inputArray[x][y][depth];
-            }
-        }
-    }
+Eigen::MatrixXf* ConvolutionLayer::getOutput() {
+    return &outputMatrix;
 }
 
-void ConvolutionLayer::flattenInputArray() {
-    int x = 0;
-    int y = 0;
+unsigned int ConvolutionLayer::getOutputSize() {
+    return imageSize;
+}
+
+unsigned int ConvolutionLayer::getOutputDepth() {
+    return filterNumber;
+}
+
+void ConvolutionLayer::setPreviousLayer(Layer* previousLayer) {
+    this->previousLayer = previousLayer;
+    previousLayer->setNextLayer(this);
+    imageSize = (previousLayer->getOutputSize() - 1) / stride + 1;
+    filterMatrix = Eigen::MatrixXf::Random(filterSize * filterSize * previousLayer->getOutputDepth() + 1, filterNumber);
+}
+
+void ConvolutionLayer::setNextLayer(Layer* nextLayer) {
+    this->nextLayer = nextLayer;
+}
+
+Eigen::MatrixXf ConvolutionLayer::flattenMatrix(Eigen::MatrixXf* inputMatrix, unsigned int inputSize, unsigned int inputDepth, unsigned int filterSize) {
+    Eigen::MatrixXf flattenMatrix = Eigen::MatrixXf::Zero(inputSize * inputSize, filterSize * filterSize * inputDepth);
+    
     for (unsigned int inputX = 0; inputX < inputSize; inputX++) {
         for (unsigned int inputY = 0; inputY < inputSize; inputY++) {
-            for (unsigned int filterX = 0; filterX < filterSize; filterX++) {
-                for (unsigned int filterY = 0; filterY < filterSize; filterY++) {
-                    for (unsigned int depth = 0; depth < inputDepth; depth++) {
-                        x = inputX - filterSize/2 + filterX;
-                        y = inputY - filterSize/2 + filterY;
-                        if (x < 0 || x >= inputSize || y < 0 || y >= inputSize) {
-                            inputMatrix(inputX*inputSize + inputY, filterX*filterSize*inputDepth + filterY*inputDepth + depth) = 0.0;
-                            break;
-                        }
-                        inputMatrix(inputX*inputSize + inputY, filterX*filterSize*inputDepth + filterY*inputDepth + depth) = inputArray[x][y][depth];
-                    }
+            flattenMatrix.row(flatten2DCoordinates(inputX, inputY, inputSize)) = flattenReceptiveField(inputMatrix, inputSize, inputDepth,  inputX, inputY, filterSize);
+        }
+    }
+    return flattenMatrix;
+}
+
+Eigen::VectorXf ConvolutionLayer::flattenReceptiveField(Eigen::MatrixXf* inputMatrix, unsigned int inputSize, unsigned int inputDepth, unsigned int inputX, unsigned int inputY, unsigned int filterSize) {
+    int newX;
+    int newY;
+    Eigen::VectorXf flattenField = Eigen::VectorXf::Zero(filterSize * filterSize * inputDepth);
+    
+    for (unsigned int fieldX = 0; fieldX < filterSize; fieldX++) {
+        for (unsigned int fieldY = 0; fieldY < filterSize; fieldY++) {
+            newX = inputX + fieldX - (int)filterSize/2;
+            newY = inputY + fieldY - (int)filterSize/2;
+            std::cout << "NewX: " << newX << " NewY: " << newY << std::endl;
+            for (unsigned int depth = 0; depth < inputDepth; depth++) {
+                if (newX < 0 || newX >= inputSize || newY < 0 || newY >= inputSize) {
+                    break;
                 }
+                //std::cout << "Vector: " << flatten3DCoordinates(fieldX, fieldY, depth, filterSize, inputDepth) << std::endl;
+                //std::cout << "Input: " << flatten2DCoordinates(newX, newY, inputSize) << ", " << depth << std::endl;
+                flattenField(flatten3DCoordinates(fieldX, fieldY, depth, filterSize, inputDepth)) = (*inputMatrix)(flatten2DCoordinates(newX, newY, inputSize), depth);
             }
         }
     }
+    return flattenField;
 }
+
+void ConvolutionLayer::addBiasColumn(Eigen::MatrixXf* inputMatrix) {
+    inputMatrix->conservativeResize(inputMatrix->rows(), inputMatrix->cols() + 1);
+    inputMatrix->col(inputMatrix->cols() - 1) = Eigen::VectorXf::Ones(inputMatrix->rows());
+}
+
 
 void ConvolutionLayer::forwardConvolution() {
+    //inputMatrix = flattenMatrix((previousLayer->getOutput()));
+    std::cout << *(previousLayer->getOutput()) << std::endl;
+    inputMatrix.conservativeResize(inputMatrix.rows(), inputMatrix.cols() + 1);
+    inputMatrix.col(inputMatrix.cols() - 1) = Eigen::MatrixXf::Ones(inputMatrix.rows(), 1);
+    
     outputMatrix = inputMatrix * filterMatrix;
+    outputMatrix /= filterMatrix.rows();
 }
 
-void ConvolutionLayer::reshapeOutputMatrix() {
-    unsigned int outputSize = inputSize/stride;
-    for (unsigned int x = 0; x < outputSize; x++) {
-        for (unsigned int y = 0; y < outputSize; y++) {
-            for (unsigned int depth = 0; depth < filterNumber; depth ++) {
-                outputArray[x][y][depth] = outputMatrix(x*outputSize + y, depth);
-            }
-        }
-    }
-}
+Eigen::MatrixXf ConvolutionLayer::getFilterMatrix() { return filterMatrix; }
+
+Eigen::MatrixXf ConvolutionLayer::getInputMatrix() { return inputMatrix; }
+
+/*void ConvolutionLayer::backwardConvolution() {
+    
+}*/
