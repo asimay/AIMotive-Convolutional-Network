@@ -94,10 +94,8 @@ void ConvolutionLayer::addBiasColumn(Eigen::MatrixXf* inputMatrix) {
 
 
 void ConvolutionLayer::forwardConvolution() {
-    //inputMatrix = flattenMatrix((previousLayer->getOutput()));
-    std::cout << *(previousLayer->getOutput()) << std::endl;
-    inputMatrix.conservativeResize(inputMatrix.rows(), inputMatrix.cols() + 1);
-    inputMatrix.col(inputMatrix.cols() - 1) = Eigen::MatrixXf::Ones(inputMatrix.rows(), 1);
+    inputMatrix = flattenMatrix(previousLayer->getOutput(), previousLayer->getOutputSize(), previousLayer->getOutputDepth(), this->filterSize, this->stride);
+    addBiasColumn(&inputMatrix);
     
     outputMatrix = inputMatrix * filterMatrix;
     outputMatrix /= filterMatrix.rows();
