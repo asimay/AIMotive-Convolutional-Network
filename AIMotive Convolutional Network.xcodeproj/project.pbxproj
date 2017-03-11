@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA07FDBD1E7482A9005AFC15 /* Layer3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA07FDBB1E7482A9005AFC15 /* Layer3D.cpp */; };
 		FAAEEF1F1E65B21400BFDB29 /* SignRecognition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAAEEF1D1E65B21400BFDB29 /* SignRecognition.cpp */; };
 		FAECDE461E5329CC00BCD1E7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAECDE451E5329CC00BCD1E7 /* main.cpp */; };
 		FAFE0C8B1E69BA2A0034A5DD /* ImageLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAFE0C891E69BA2A0034A5DD /* ImageLoader.cpp */; };
 		FAFE0C8E1E6A05B30034A5DD /* ConvolutionLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAFE0C8C1E6A05B30034A5DD /* ConvolutionLayer.cpp */; };
-		FAFE0C911E6F33800034A5DD /* Layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAFE0C8F1E6F33800034A5DD /* Layer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +27,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FA07FDBB1E7482A9005AFC15 /* Layer3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Layer3D.cpp; path = ../Layer3D.cpp; sourceTree = "<group>"; };
+		FA07FDBC1E7482A9005AFC15 /* Layer3D.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Layer3D.hpp; path = ../Layer3D.hpp; sourceTree = "<group>"; };
 		FAAEEF1D1E65B21400BFDB29 /* SignRecognition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SignRecognition.cpp; sourceTree = "<group>"; };
 		FAAEEF1E1E65B21400BFDB29 /* SignRecognition.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SignRecognition.hpp; sourceTree = "<group>"; };
 		FAECDE421E5329CC00BCD1E7 /* AIMotive Convolutional Network */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "AIMotive Convolutional Network"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -35,8 +37,6 @@
 		FAFE0C8A1E69BA2A0034A5DD /* ImageLoader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ImageLoader.hpp; sourceTree = "<group>"; };
 		FAFE0C8C1E6A05B30034A5DD /* ConvolutionLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConvolutionLayer.cpp; sourceTree = "<group>"; };
 		FAFE0C8D1E6A05B30034A5DD /* ConvolutionLayer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ConvolutionLayer.hpp; sourceTree = "<group>"; };
-		FAFE0C8F1E6F33800034A5DD /* Layer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Layer.cpp; sourceTree = "<group>"; };
-		FAFE0C901E6F33800034A5DD /* Layer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Layer.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,8 +72,8 @@
 				FAECDE451E5329CC00BCD1E7 /* main.cpp */,
 				FAAEEF1D1E65B21400BFDB29 /* SignRecognition.cpp */,
 				FAAEEF1E1E65B21400BFDB29 /* SignRecognition.hpp */,
-				FAFE0C8F1E6F33800034A5DD /* Layer.cpp */,
-				FAFE0C901E6F33800034A5DD /* Layer.hpp */,
+				FA07FDBB1E7482A9005AFC15 /* Layer3D.cpp */,
+				FA07FDBC1E7482A9005AFC15 /* Layer3D.hpp */,
 				FAFE0C891E69BA2A0034A5DD /* ImageLoader.cpp */,
 				FAFE0C8A1E69BA2A0034A5DD /* ImageLoader.hpp */,
 				FAFE0C8C1E6A05B30034A5DD /* ConvolutionLayer.cpp */,
@@ -140,10 +140,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAAEEF1F1E65B21400BFDB29 /* SignRecognition.cpp in Sources */,
+				FA07FDBD1E7482A9005AFC15 /* Layer3D.cpp in Sources */,
 				FAECDE461E5329CC00BCD1E7 /* main.cpp in Sources */,
 				FAFE0C8E1E6A05B30034A5DD /* ConvolutionLayer.cpp in Sources */,
 				FAFE0C8B1E69BA2A0034A5DD /* ImageLoader.cpp in Sources */,
-				FAFE0C911E6F33800034A5DD /* Layer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,15 +9,15 @@
 #ifndef ImageLoader_hpp
 #define ImageLoader_hpp
 
-#include "Layer.hpp"
-
 #include <iostream>
+#include <Eigen>
+#include "Layer3D.hpp"
 
 //A class that loads and stores all the pictures for the convolutional network.
-class ImageLoader : public Layer {
+class ImageLoader : public Layer3D {
     
 private:
-    Layer* nextLayer;
+    Layer3D* nextLayer;
     
     unsigned int numberOfClasses;
     unsigned int numberOfImages;
@@ -27,6 +27,7 @@ private:
     std::string folderPath;
     
     std::vector<std::vector<Eigen::MatrixXf>> imageMatrices;
+    Eigen::MatrixXf outputImage;
     
     //Normalizes the pixel values
     void normalizePixel(unsigned char pixelValue);
@@ -35,11 +36,15 @@ public:
     ImageLoader(std::string folderPath, unsigned int numberOfClasses, unsigned int numberOfImages, unsigned int imageSize, unsigned int numberOfColors);
     ~ImageLoader();
     
-    Eigen::MatrixXf* getOutput();
-    unsigned int getOutputSize();
-    unsigned int getOutputDepth();
-    void setPreviousLayer(Layer* previousLayer);
-    void setNextLayer(Layer* nextLayer);
+    Eigen::MatrixXf* getOutput() { return &outputImage; }
+    unsigned int getSize() { return imageSize; }
+    unsigned int getDepth() { return numberOfColors; }
+    
+    void setPreviousLayer(Layer3D* previousLayer) {}
+    void setNextLayer(Layer3D* nextLayer) { this->nextLayer = nextLayer; }
+    
+    void forwardPropagation() { nextLayer->forwardPropagation(); }
+    void backwardPropagation() {}
     
     void loadImages();
     void loadImage(std::string, unsigned int, unsigned int);

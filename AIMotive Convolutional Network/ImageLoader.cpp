@@ -25,25 +25,6 @@ ImageLoader::~ImageLoader() {
     
 }
 
-Eigen::MatrixXf* ImageLoader::getOutput() {
-    return &imageMatrices[0][0];
-}
-
-unsigned int ImageLoader::getOutputSize() {
-    return imageSize;
-}
-
-unsigned int ImageLoader::getOutputDepth() {
-    return numberOfColors;
-}
-
-void ImageLoader::setPreviousLayer(Layer* previousLayer) {
-    
-}
-
-void ImageLoader::setNextLayer(Layer* nextLayer) {
-    this->nextLayer = nextLayer;
-}
 
 void ImageLoader::loadImages() {
     for (unsigned int classNumber = 0; classNumber < numberOfClasses; classNumber++) {
