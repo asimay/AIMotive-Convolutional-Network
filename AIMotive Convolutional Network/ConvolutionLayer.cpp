@@ -52,12 +52,13 @@ void ConvolutionLayer::setNextLayer(Layer* nextLayer) {
     this->nextLayer = nextLayer;
 }
 
-Eigen::MatrixXf ConvolutionLayer::flattenMatrix(Eigen::MatrixXf* inputMatrix, unsigned int inputSize, unsigned int inputDepth, unsigned int filterSize) {
-    Eigen::MatrixXf flattenMatrix = Eigen::MatrixXf::Zero(inputSize * inputSize, filterSize * filterSize * inputDepth);
+Eigen::MatrixXf ConvolutionLayer::flattenMatrix(Eigen::MatrixXf* inputMatrix, unsigned int inputSize, unsigned int inputDepth, unsigned int filterSize, unsigned int stride) {
+    unsigned int flattenSize = (inputSize-1) / stride + 1;
+    Eigen::MatrixXf flattenMatrix = Eigen::MatrixXf::Zero(flattenSize * flattenSize, filterSize * filterSize * inputDepth);
     
-    for (unsigned int inputX = 0; inputX < inputSize; inputX++) {
-        for (unsigned int inputY = 0; inputY < inputSize; inputY++) {
-            flattenMatrix.row(flatten2DCoordinates(inputX, inputY, inputSize)) = flattenReceptiveField(inputMatrix, inputSize, inputDepth,  inputX, inputY, filterSize);
+    for (unsigned int inputX = 0; inputX < inputSize; inputX += stride) {
+        for (unsigned int inputY = 0; inputY < inputSize; inputY += stride) {
+            flattenMatrix.row(flatten2DCoordinates(inputX/stride, inputY/stride, flattenSize)) = flattenReceptiveField(inputMatrix, inputSize, inputDepth,  inputX, inputY, filterSize);
         }
     }
     return flattenMatrix;

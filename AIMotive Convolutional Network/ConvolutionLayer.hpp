@@ -43,7 +43,7 @@ public:
     Eigen::MatrixXf getFilterMatrix();
     Eigen::MatrixXf getInputMatrix();
     
-    static Eigen::MatrixXf flattenMatrix(Eigen::MatrixXf* inputMatrix, unsigned int inputSize, unsigned int inputDepth, unsigned int filterSize);
+    static Eigen::MatrixXf flattenMatrix(Eigen::MatrixXf* inputMatrix, unsigned int inputSize, unsigned int inputDepth, unsigned int filterSize, unsigned int stride);
     static Eigen::VectorXf flattenReceptiveField(Eigen::MatrixXf* inputMatrix, unsigned int inputSize, unsigned int inputDepth, unsigned int inputX, unsigned int inputY, unsigned int filterSize);
     static void addBiasColumn(Eigen::MatrixXf* inputMatrix);
 };
