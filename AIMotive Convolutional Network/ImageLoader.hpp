@@ -9,34 +9,48 @@
 #ifndef ImageLoader_hpp
 #define ImageLoader_hpp
 
-#include <stdio.h>
 #include <iostream>
-//#include <fstream>
+#include <Eigen>
+#include "Layer3D.hpp"
+
+//A class that loads and stores all the pictures for the convolutional network.
+class ImageLoader : public Layer3D {
+    
+private:
+    Layer3D* nextLayer;
+    
+    unsigned int numberOfClasses;
+    unsigned int numberOfImages;
+    unsigned int imageSize;
+    unsigned int numberOfColors;
+    
+    std::string folderPath;
+    
+    std::vector<std::vector<Eigen::MatrixXf>> imageMatrices;
+    Eigen::MatrixXf outputImage;
+    
+    //Normalizes the pixel values
+    void normalizePixel(unsigned char pixelValue);
+    
+public:
+    ImageLoader(std::string folderPath, unsigned int numberOfClasses, unsigned int numberOfImages, unsigned int imageSize, unsigned int numberOfColors);
+    ~ImageLoader();
+    
+    Eigen::MatrixXf* getOutput() { return &outputImage; }
+    unsigned int getSize() { return imageSize; }
+    unsigned int getDepth() { return numberOfColors; }
+    
+    void setPreviousLayer(Layer3D* previousLayer) {}
+    void setNextLayer(Layer3D* nextLayer) { this->nextLayer = nextLayer; }
+    
+    void forwardPropagation() { nextLayer->forwardPropagation(); }
+    void backwardPropagation() {}
+    
+    void loadImages();
+    void loadImage(std::string, unsigned int, unsigned int);
+    std::string getImagePath(std::string, unsigned int, unsigned int);
+    unsigned int numberOfDigits(unsigned int);
+    float normalize(float);
+};
 
 #endif /* ImageLoader_hpp */
-
-#define NUMBER_OF_CLASSES 12
-#define NUMBER_OF_IMAGES 5000
-#define IMAGE_SIZE 52
-#define NUMBER_OF_COLORS 3
-
-#define FOLDER_PATH "/Users/pilinszki-nagycsongor/Developer/train-52x52/"
-#define HEADER_LENGTH 138
-
-using std::cout;
-using std::endl;
-using std::string;
-using std::to_string;
-
-class ImageLoader {
-private:
-    unsigned char***** images;
-    unsigned char imagePixels[IMAGE_SIZE * IMAGE_SIZE * NUMBER_OF_COLORS];
-public:
-    ImageLoader();
-    ~ImageLoader();
-    void loadImages();
-    void loadImage(unsigned int, unsigned int);
-    string getImagePath(unsigned int, unsigned int);
-    unsigned int numberOfDigits(unsigned int);
-};

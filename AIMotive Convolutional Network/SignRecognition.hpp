@@ -9,9 +9,6 @@
 #ifndef SignRecognition_hpp
 #define SignRecognition_hpp
 
-#include <stdio.h>
-
-#endif /* SignRecognition_hpp */
 
 class SignRecognition {
 private:
@@ -20,3 +17,5 @@ public:
     SignRecognition();
     ~SignRecognition();
 };
+
+#endif /* SignRecognition_hpp */
