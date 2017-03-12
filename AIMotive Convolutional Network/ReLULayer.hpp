@@ -14,27 +14,32 @@
 #include <Eigen>
 
 class ReLULayer : public Layer3D {
+    
 private:
     
     Layer3D* previousLayer;
     Layer3D* nextLayer;
     
-    unsigned int imageSize;
-    unsigned int imageDepth;
+    Eigen::MatrixXf layerValue;
+    Eigen::MatrixXf layerDelta;
     
-    Eigen::MatrixXf outputMatrix;
-    Eigen::MatrixXf deltaOutputMatrix;
+    unsigned int layerSize;
+    unsigned int layerDepth;
     
 public:
     
-    ReLULayer();
+    ReLULayer(Layer3D* previousLayer);
     ~ReLULayer();
-    Eigen::MatrixXf* getOutput() { return &outputMatrix; }
-    unsigned int getSize() { return imageSize; }
-    unsigned int getDepth() { return imageDepth; }
     
-    void setPreviousLayer(Layer3D* previousLayer) { this->previousLayer = previousLayer; }
-    void setNextLayer(Layer3D* nextLayer) { this->nextLayer = nextLayer; }
+    Eigen::MatrixXf* getValue() { return &layerValue; }
+    Eigen::MatrixXf* getDelta() { return &layerDelta; }
+    
+    unsigned int getSize() { return layerSize; }
+    unsigned int getDepth() { return layerDepth; }
+    
+    void setNextLayer(Layer3D* nextLayer) {
+        this->nextLayer = nextLayer;
+    }
     
     void forwardPropagation();
     void backwardPropagation();

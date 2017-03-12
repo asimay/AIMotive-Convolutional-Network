@@ -15,13 +15,16 @@
 class Layer3D {
     
 public:
+    
     Layer3D() {}
     virtual ~Layer3D() {}
-    virtual Eigen::MatrixXf* getOutput() = 0;
+    
+    virtual Eigen::MatrixXf* getValue() = 0;
+    virtual Eigen::MatrixXf* getDelta() = 0;
+    
     virtual unsigned int getSize() = 0;
     virtual unsigned int getDepth() = 0;
     
-    virtual void setPreviousLayer(Layer3D* previousLayer) = 0;
     virtual void setNextLayer(Layer3D* nextLayer) = 0;
     
     virtual void forwardPropagation() = 0;
