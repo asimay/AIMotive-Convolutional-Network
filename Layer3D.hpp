@@ -15,6 +15,8 @@
 class Layer3D {
     
 public:
+    Layer3D() {}
+    virtual ~Layer3D() {}
     virtual Eigen::MatrixXf* getOutput() = 0;
     virtual unsigned int getSize() = 0;
     virtual unsigned int getDepth() = 0;
