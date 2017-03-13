@@ -15,6 +15,7 @@
 #include "ConvolutionLayer.hpp"
 #include "ReLULayer.hpp"
 #include "PoolingLayer.hpp"
+#include "FullyConnectedLayer.hpp"
 
 #define IMAGE_SIZE 2
 #define NUMBER_OF_COLORS 3
@@ -23,6 +24,10 @@
 #define FOLDER_PATH "/Users/pilinszki-nagycsongor/Developer/train-52x52/"
 
 int main(int argc, const char * argv[]) {
+    
+    Eigen::VectorXf vec1 = Eigen::VectorXf::Ones(5);
+    vec1.conservativeResize(4);
+    std::cout << vec1 << std::endl;
     
     return 0;
 }
