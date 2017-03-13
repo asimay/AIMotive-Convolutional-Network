@@ -22,7 +22,7 @@ private:
     
     Eigen::MatrixXf layerValue;
     Eigen::MatrixXf layerDelta;
-    Eigen::MatrixXf layerIndex;
+    Eigen::MatrixXd layerIndex;
     
     int layerSize;
     int layerDepth;
@@ -46,7 +46,7 @@ public:
     void forwardPropagation();
     void backwardPropagation();
     
-    static void findMaxValues(Eigen::MatrixXf* inputMatrix, Eigen::MatrixXf* outputMatrix, Eigen::MatrixXf* indexMatrix, int inputSize, int inputDepth, int poolingSize);
+    static void findMaxValues(Eigen::MatrixXf* inputMatrix, Eigen::MatrixXf* outputMatrix, Eigen::MatrixXd* indexMatrix, int inputSize, int inputDepth, int poolingSize);
     static void findMaxInPool(Eigen::MatrixXf* inputMatrix, float* maxValue, int* maxIndex, int inputSize, int poolingSize, int poolX, int poolY, int poolingDepth);
 };
 

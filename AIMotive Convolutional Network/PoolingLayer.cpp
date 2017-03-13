@@ -23,13 +23,23 @@ PoolingLayer::PoolingLayer(Layer3D* previousLayer, int poolingSize) {
 
 void PoolingLayer::forwardPropagation() {
     layerValue = Eigen::MatrixXf::Zero(layerSize*layerSize, layerDepth);
-    float maxValue;
+    layerIndex = Eigen::MatrixXd::Zero(layerSize*layerSize, layerDepth);
+    findMaxValues(previousLayer->getValue(), &layerValue, &layerIndex, previousLayer->getSize(), previousLayer->getDepth(), poolingSize);
     
 }
 
-void PoolingLayer::backwardPropagation() {}
+void PoolingLayer::backwardPropagation() {
+    int previousSize = previousLayer->getSize();
+    int previousDepth = previousLayer->getDepth();
+    layerDelta = Eigen::MatrixXf::Zero(previousSize*previousSize, previousDepth);
+    for (int row = 0; row < layerSize*layerSize; row++) {
+        for (int col = 0; col < layerDepth; col++) {
+            layerDelta(layerIndex(row, col), col) = (*nextLayer->getDelta())(row, col);
+        }
+    }
+}
 
-void PoolingLayer::findMaxValues(Eigen::MatrixXf* inputMatrix, Eigen::MatrixXf* outputMatrix, Eigen::MatrixXf* indexMatrix, int inputSize, int inputDepth, int poolingSize) {
+void PoolingLayer::findMaxValues(Eigen::MatrixXf* inputMatrix, Eigen::MatrixXf* outputMatrix, Eigen::MatrixXd* indexMatrix, int inputSize, int inputDepth, int poolingSize) {
     float maxValue;
     int maxIndex;
     int outputSize = (inputSize - 1) / poolingSize + 1;
@@ -60,3 +70,4 @@ void PoolingLayer::findMaxInPool(Eigen::MatrixXf* inputMatrix, float* maxValue, 
         }
     }
 }
+
