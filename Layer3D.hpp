@@ -22,16 +22,16 @@ public:
     virtual Eigen::MatrixXf* getValue() = 0;
     virtual Eigen::MatrixXf* getDelta() = 0;
     
-    virtual unsigned int getSize() = 0;
-    virtual unsigned int getDepth() = 0;
+    virtual int getSize() = 0;
+    virtual int getDepth() = 0;
     
     virtual void setNextLayer(Layer3D* nextLayer) = 0;
     
     virtual void forwardPropagation() = 0;
     virtual void backwardPropagation() = 0;
     
-    static unsigned int flatten2DCoordinates(unsigned int x, unsigned int y, unsigned int size);
-    static unsigned int flatten3DCoordinates(unsigned int x, unsigned int y, unsigned int z, unsigned int xySize, unsigned int zSize);
+    static int flatten2DCoordinates(int x, int y, int size);
+    static int flatten3DCoordinates(int x, int y, int z, int xySize, int zSize);
     
 };
 

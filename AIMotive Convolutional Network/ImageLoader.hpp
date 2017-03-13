@@ -19,10 +19,10 @@ class ImageLoader : public Layer3D {
 private:
     Layer3D* nextLayer;
     
-    unsigned int numberOfClasses;
-    unsigned int numberOfImages;
-    unsigned int imageSize;
-    unsigned int numberOfColors;
+    int numberOfClasses;
+    int numberOfImages;
+    int imageSize;
+    int numberOfColors;
     
     std::string folderPath;
     
@@ -33,12 +33,12 @@ private:
     void normalizePixel(unsigned char pixelValue);
     
 public:
-    ImageLoader(std::string folderPath, unsigned int numberOfClasses, unsigned int numberOfImages, unsigned int imageSize, unsigned int numberOfColors);
+    ImageLoader(std::string folderPath, int numberOfClasses, int numberOfImages, int imageSize, int numberOfColors);
     ~ImageLoader();
     
     Eigen::MatrixXf* getOutput() { return &outputImage; }
-    unsigned int getSize() { return imageSize; }
-    unsigned int getDepth() { return numberOfColors; }
+    int getSize() { return imageSize; }
+    int getDepth() { return numberOfColors; }
     
     void setPreviousLayer(Layer3D* previousLayer) {}
     void setNextLayer(Layer3D* nextLayer) { this->nextLayer = nextLayer; }
@@ -47,9 +47,9 @@ public:
     void backwardPropagation() {}
     
     void loadImages();
-    void loadImage(std::string, unsigned int, unsigned int);
-    std::string getImagePath(std::string, unsigned int, unsigned int);
-    unsigned int numberOfDigits(unsigned int);
+    void loadImage(std::string, int, int);
+    std::string getImagePath(std::string, int, int);
+    int numberOfDigits(int);
     float normalize(float);
 };
 

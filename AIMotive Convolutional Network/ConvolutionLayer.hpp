@@ -20,10 +20,10 @@ private:
     Layer3D* previousLayer;
     Layer3D* nextLayer;
     
-    unsigned int imageSize;
-    unsigned int filterSize;
-    unsigned int filterNumber;
-    unsigned int stride;
+    int imageSize;
+    int filterSize;
+    int filterNumber;
+    int stride;
     
     Eigen::MatrixXf filterMatrix;
     Eigen::MatrixXf inputMatrix;
@@ -33,20 +33,20 @@ private:
     
 public:
     
-    ConvolutionLayer(unsigned int filterSize, unsigned int filterNumber, unsigned int stride);
+    ConvolutionLayer(int filterSize, int filterNumber, int stride);
     ~ConvolutionLayer();
     
-    static Eigen::MatrixXf flattenMatrix(Eigen::MatrixXf* inputMatrix, unsigned int inputSize, unsigned int inputDepth, unsigned int filterSize, unsigned int stride);
-    static Eigen::VectorXf flattenReceptiveField(Eigen::MatrixXf* inputMatrix, unsigned int inputSize, unsigned int inputDepth, unsigned int inputX, unsigned int inputY, unsigned int filterSize);
+    static Eigen::MatrixXf flattenMatrix(Eigen::MatrixXf* inputMatrix, int inputSize, int inputDepth, int filterSize, int stride);
+    static Eigen::VectorXf flattenReceptiveField(Eigen::MatrixXf* inputMatrix, int inputSize, int inputDepth, int inputX, int inputY, int filterSize);
     static void addBiasColumn(Eigen::MatrixXf* inputMatrix);
-    static Eigen::MatrixXf reorderMatrix(Eigen::MatrixXf* inputMatrix, unsigned int inputSize, unsigned int inputDepth, unsigned int filterSize, unsigned int stride);
-    static void reorderReceptiveField(Eigen::MatrixXf* inputMatrix, Eigen::MatrixXf* outputMatrix, unsigned int inputSize, unsigned int inputDepth, unsigned int inputX, unsigned int inputY, unsigned int filterSize, unsigned int stride);
+    static Eigen::MatrixXf reorderMatrix(Eigen::MatrixXf* inputMatrix, int inputSize, int inputDepth, int filterSize, int stride);
+    static void reorderReceptiveField(Eigen::MatrixXf* inputMatrix, Eigen::MatrixXf* outputMatrix, int inputSize, int inputDepth, int inputX, int inputY, int filterSize, int stride);
     
-    unsigned int getSize() { return imageSize; }
-    unsigned int getDepth() { return filterNumber; }
-    unsigned int getFilterSize() { return filterSize; }
-    unsigned int getFilterNumber() { return filterNumber; }
-    unsigned int getStride() { return stride; }
+    int getSize() { return imageSize; }
+    int getDepth() { return filterNumber; }
+    int getFilterSize() { return filterSize; }
+    int getFilterNumber() { return filterNumber; }
+    int getStride() { return stride; }
     
     
     Eigen::MatrixXf* getFilter() { return &filterMatrix; }

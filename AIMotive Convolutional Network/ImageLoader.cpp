@@ -10,7 +10,7 @@
 
 #define HEADER_LENGTH 138
 
-ImageLoader::ImageLoader(std::string folderPath, unsigned int numberOfClasses, unsigned int numberOfImages, unsigned int imageSize, unsigned int numberOfColors) {
+ImageLoader::ImageLoader(std::string folderPath, int numberOfClasses, int numberOfImages, int imageSize, int numberOfColors) {
     this->folderPath = folderPath;
     this->numberOfClasses = numberOfClasses;
     this->numberOfImages = numberOfImages;
@@ -28,15 +28,15 @@ ImageLoader::~ImageLoader() {
 
 
 void ImageLoader::loadImages() {
-    for (unsigned int classNumber = 0; classNumber < numberOfClasses; classNumber++) {
-        for (unsigned int imageNumber = 0; imageNumber < numberOfImages; imageNumber++) {
+    for (int classNumber = 0; classNumber < numberOfClasses; classNumber++) {
+        for (int imageNumber = 0; imageNumber < numberOfImages; imageNumber++) {
             loadImage(folderPath, classNumber + 1, imageNumber);
         }
         std::cout << "Class " << classNumber + 1 << " loaded" << std::endl;
     }
 }
 
-void ImageLoader::loadImage(std::string folderPath, unsigned int classNumber, unsigned int imageNumber) {
+void ImageLoader::loadImage(std::string folderPath, int classNumber, int imageNumber) {
     std::string imagePath = getImagePath(folderPath, classNumber, imageNumber);
     
     FILE* inputImage = fopen(imagePath.c_str(), "rb");
@@ -51,9 +51,9 @@ void ImageLoader::loadImage(std::string folderPath, unsigned int classNumber, un
     unsigned char imagePixels[imageSize * imageSize * numberOfColors];
     fread(imagePixels, sizeof(unsigned char), imageSize * imageSize * numberOfColors, inputImage);
     
-    for (unsigned int x = 0; x < imageSize; x++) {
-        for (unsigned int y = 0; y < imageSize; y++) {
-            for (unsigned int color = 0; color < numberOfColors; color++) {
+    for (int x = 0; x < imageSize; x++) {
+        for (int y = 0; y < imageSize; y++) {
+            for (int color = 0; color < numberOfColors; color++) {
                 imageMatrices[classNumber - 1][imageNumber](flatten2DCoordinates(x, y, imageSize), color) = normalize ((float) imagePixels[flatten3DCoordinates(x, y, color, imageSize, numberOfColors)]);
 
             }
@@ -63,15 +63,15 @@ void ImageLoader::loadImage(std::string folderPath, unsigned int classNumber, un
     fclose(inputImage);
 }
 
-std::string ImageLoader::getImagePath(std::string folderPath, unsigned int classNumber, unsigned int imageNumber) {
+std::string ImageLoader::getImagePath(std::string folderPath, int classNumber, int imageNumber) {
     std::string imagePath = folderPath;
     imagePath += std::to_string(classNumber);
     imagePath += "/";
     imagePath += std::to_string(classNumber);
     imagePath += "_";
     
-    unsigned int paddingZeros = 4 - numberOfDigits(imageNumber);
-    for (unsigned int i = 0; i < paddingZeros; i++) {
+    int paddingZeros = 4 - numberOfDigits(imageNumber);
+    for (int i = 0; i < paddingZeros; i++) {
         imagePath += "0";
     }
     
@@ -81,9 +81,9 @@ std::string ImageLoader::getImagePath(std::string folderPath, unsigned int class
     return imagePath;
 }
 
-unsigned int ImageLoader::numberOfDigits(unsigned int number) {
+int ImageLoader::numberOfDigits(int number) {
     if (number == 0) return 1;
-    unsigned int numberOfDigits = 0;
+    int numberOfDigits = 0;
     while (number) {
         numberOfDigits++;
         number /= 10;
