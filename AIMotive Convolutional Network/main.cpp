@@ -14,6 +14,7 @@
 #include "ImageLoader.hpp"
 #include "ConvolutionLayer.hpp"
 #include "ReLULayer.hpp"
+#include "PoolingLayer.hpp"
 
 #define IMAGE_SIZE 2
 #define NUMBER_OF_COLORS 3
@@ -22,9 +23,6 @@
 #define FOLDER_PATH "/Users/pilinszki-nagycsongor/Developer/train-52x52/"
 
 int main(int argc, const char * argv[]) {
-    
-    
-    
     
     return 0;
 }

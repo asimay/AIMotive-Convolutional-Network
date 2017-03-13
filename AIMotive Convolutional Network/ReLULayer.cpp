@@ -20,12 +20,10 @@ ReLULayer::ReLULayer(Layer3D* previousLayer) {
     layerDepth = previousLayer->getDepth();
 }
 
-ReLULayer::~ReLULayer() {}
-
 void ReLULayer::forwardPropagation() {
     layerValue = *previousLayer->getValue();
-    for (unsigned int row = 0; row < layerSize * layerSize; row++) {
-        for (unsigned int col= 0; col < layerDepth; col++) {
+    for (int row = 0; row < layerSize * layerSize; row++) {
+        for (int col= 0; col < layerDepth; col++) {
             if (layerValue(row, col) < 0.0 )
                 layerValue(row, col) = 0.0;
         }
@@ -34,8 +32,8 @@ void ReLULayer::forwardPropagation() {
 
 void ReLULayer::backwardPropagation() {
     layerDelta = *nextLayer->getDelta();
-    for (unsigned int row = 0; row < layerSize * layerSize; row++) {
-        for (unsigned int col= 0; col < layerDepth; col++) {
+    for (int row = 0; row < layerSize * layerSize; row++) {
+        for (int col= 0; col < layerDepth; col++) {
             if (layerValue(row, col) < 0.0 )
                 layerDelta(row, col) = 0.0;
         }

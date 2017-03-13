@@ -8,11 +8,11 @@
 
 #include "Layer3D.hpp"
 
-unsigned int Layer3D::flatten2DCoordinates(unsigned int x, unsigned int y, unsigned int size) {
+int Layer3D::flatten2DCoordinates(int x, int y, int size) {
     if (x >= size || y >= size) throw "Bad coordinates";
     return x * size + y;
 }
 
-unsigned int Layer3D::flatten3DCoordinates(unsigned int x, unsigned int y, unsigned int z, unsigned int xySize, unsigned int zSize) {
+int Layer3D::flatten3DCoordinates(int x, int y, int z, int xySize, int zSize) {
     return flatten2DCoordinates(x, y, xySize) * zSize + z;
 }
