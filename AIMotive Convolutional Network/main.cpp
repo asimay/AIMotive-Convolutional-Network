@@ -25,11 +25,8 @@
 
 int main(int argc, const char * argv[]) {
     
-    Eigen::VectorXf vec1 = Eigen::VectorXf::Ones(5);
-    vec1.conservativeResize(4);
-    std::cout << vec1 << std::endl;
-    
     return 0;
+    
 }
 
 

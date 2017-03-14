@@ -22,13 +22,15 @@ private:
     Eigen::MatrixXf layerWeight;
     Eigen::VectorXf layerDelta;
     
-    int layerSize; //without bias
+    const int layerSize; //without bias
+    const float learningRate;
+    
     
 public:
-    FullyConnectedLayer() : previousLayer(NULL), nextLayer(NULL), layerValue(Eigen::VectorXf()), layerWeight(Eigen::MatrixXf()), layerDelta(Eigen::VectorXf()), layerSize(0) {}
-    FullyConnectedLayer(FullyConnectedLayer* previousLayer, int layerSize) : previousLayer(previousLayer), nextLayer(NULL), layerValue(Eigen::VectorXf()), layerWeight(Eigen::MatrixXf()), layerDelta(Eigen::VectorXf()), layerSize(layerSize) {
+    FullyConnectedLayer() : previousLayer(NULL), nextLayer(NULL), layerValue(Eigen::VectorXf()), layerWeight(Eigen::MatrixXf()), layerDelta(Eigen::VectorXf()), layerSize(0), learningRate(0.0) {}
+    FullyConnectedLayer(FullyConnectedLayer* previousLayer, int layerSize, float learningRate) : previousLayer(previousLayer), nextLayer(NULL), layerValue(Eigen::VectorXf()), layerWeight(Eigen::MatrixXf()), layerDelta(Eigen::VectorXf()), layerSize(layerSize), learningRate(learningRate) {
         if (previousLayer != NULL) {
-            layerWeight = Eigen::MatrixXf::Random(previousLayer->getLayerSize(), layerSize);
+            layerWeight = Eigen::MatrixXf::Random(previousLayer->getLayerSize() + 1, layerSize);
             previousLayer->setNextLayer(this);
         }
     }
@@ -50,12 +52,11 @@ public:
     void setLayerDelta(Eigen::VectorXf& layerDelta) { this->layerDelta = layerDelta; }
     
     int getLayerSize() { return layerSize; }
-    void setLayerSize(int layerSize) { this->layerSize = layerSize; }
+    float getLearningRate() { return learningRate; }
     
     void forwardPropagation();
     void backwardPropagation();
-    
-    void calculateDeltaAndCost(Eigen::VectorXf& answer);
+    void adjustWeights();
     
 };
 

@@ -41,6 +41,14 @@ void FullyConnectedLayer::backwardPropagation() {
     }
     
     if (previousLayer != NULL) {
+        adjustWeights();
         previousLayer->backwardPropagation();
+    }
+}
+
+//DONE
+void FullyConnectedLayer::adjustWeights() {
+    if (previousLayer != NULL) {
+        layerWeight -= (layerDelta * previousLayer->getLayerValue().transpose()) * learningRate;
     }
 }
