@@ -15,20 +15,22 @@
 
 class FullyConnectedLayer {
 private:
+    const std::string layerName;
+    
     FullyConnectedLayer* previousLayer;
     FullyConnectedLayer* nextLayer;
     
-    Eigen::VectorXf layerValue;
+    Eigen::RowVectorXf layerValue;
     Eigen::MatrixXf layerWeight;
-    Eigen::VectorXf layerDelta;
+    Eigen::RowVectorXf layerDelta;
     
     const int layerSize; //without bias
     const float learningRate;
     
     
 public:
-    FullyConnectedLayer() : previousLayer(NULL), nextLayer(NULL), layerValue(Eigen::VectorXf()), layerWeight(Eigen::MatrixXf()), layerDelta(Eigen::VectorXf()), layerSize(0), learningRate(0.0) {}
-    FullyConnectedLayer(FullyConnectedLayer* previousLayer, int layerSize, float learningRate) : previousLayer(previousLayer), nextLayer(NULL), layerValue(Eigen::VectorXf()), layerWeight(Eigen::MatrixXf()), layerDelta(Eigen::VectorXf()), layerSize(layerSize), learningRate(learningRate) {
+    FullyConnectedLayer() : layerName(""), previousLayer(NULL), nextLayer(NULL), layerValue(Eigen::RowVectorXf()), layerWeight(Eigen::MatrixXf()), layerDelta(Eigen::RowVectorXf()), layerSize(0), learningRate(0.0) {}
+    FullyConnectedLayer(std::string layerName, FullyConnectedLayer* previousLayer, int layerSize, float learningRate) : layerName(layerName), previousLayer(previousLayer), nextLayer(NULL), layerValue(Eigen::RowVectorXf()), layerWeight(Eigen::MatrixXf()), layerDelta(Eigen::RowVectorXf()), layerSize(layerSize), learningRate(learningRate) {
         if (previousLayer != NULL) {
             layerWeight = Eigen::MatrixXf::Random(previousLayer->getLayerSize() + 1, layerSize);
             previousLayer->setNextLayer(this);
@@ -42,20 +44,22 @@ public:
     FullyConnectedLayer* getNextLayer() { return nextLayer; }
     void setNextLayer(FullyConnectedLayer* nextLayer) { this->nextLayer = nextLayer; }
     
-    Eigen::VectorXf& getLayerValue() { return layerValue; }
-    void setLayerValue(Eigen::VectorXf& layerValue) { this->layerValue = layerValue; }
+    Eigen::RowVectorXf& getLayerValue() { return layerValue; }
+    void setLayerValue(Eigen::RowVectorXf& layerValue) { this->layerValue = layerValue; }
     
     Eigen::MatrixXf& getLayerWeight() { return layerWeight; }
     void setLayerWeight(Eigen::MatrixXf& layerWeight) { this->layerWeight = layerWeight; }
     
-    Eigen::VectorXf& getLayerDelta() { return layerDelta; }
-    void setLayerDelta(Eigen::VectorXf& layerDelta) { this->layerDelta = layerDelta; }
+    Eigen::RowVectorXf& getLayerDelta() { return layerDelta; }
+    void setLayerDelta(Eigen::RowVectorXf& layerDelta) { this->layerDelta = layerDelta; }
     
     int getLayerSize() { return layerSize; }
     float getLearningRate() { return learningRate; }
     
     void forwardPropagation();
     void backwardPropagation();
+    void calculateLayerValue();
+    void calculateLayerDelta();
     void adjustWeights();
     
 };
