@@ -13,36 +13,27 @@
 #include "Layer3D.hpp"
 #include <Eigen>
 
-class ReLULayer : public Layer3D {
+class ReLULayer {
     
 private:
     
-    Layer3D* previousLayer;
-    Layer3D* nextLayer;
-    
-    Eigen::MatrixXf layerValue;
-    Eigen::MatrixXf layerDelta;
-    
-    int layerSize;
-    int layerDepth;
+    Eigen::MatrixXf valueInput;
+    Eigen::MatrixXf valueOutput;
+    Eigen::MatrixXf deltaInput;
+    Eigen::MatrixXf deltaOutput;
     
 public:
     
-    ReLULayer(Layer3D* previousLayer);
+    ReLULayer() : valueInput(Eigen::MatrixXf()), valueOutput(Eigen::MatrixXf()), deltaInput(Eigen::MatrixXf()), deltaOutput(Eigen::MatrixXf()) {}
     ~ReLULayer() {}
     
-    Eigen::MatrixXf* getValue() { return &layerValue; }
-    Eigen::MatrixXf* getDelta() { return &layerDelta; }
+    Eigen::MatrixXf getValueInput() { return valueInput; }
+    Eigen::MatrixXf getValueOutput() { return valueOutput; }
+    Eigen::MatrixXf getDeltaInput() { return deltaInput; }
+    Eigen::MatrixXf getDeltaOutput() { return deltaOutput; }
     
-    int getSize() { return layerSize; }
-    int getDepth() { return layerDepth; }
-    
-    void setNextLayer(Layer3D* nextLayer) {
-        this->nextLayer = nextLayer;
-    }
-    
-    void forwardPropagation();
-    void backwardPropagation();
+    Eigen::MatrixXf forwardPropagation(const Eigen::MatrixXf&);
+    Eigen::MatrixXf backwardPropagation(const Eigen::MatrixXf&);
     
 };
 
