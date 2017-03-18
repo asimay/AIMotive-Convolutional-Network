@@ -34,8 +34,8 @@ public:
     Eigen::MatrixXf getDeltaInput() { return deltaInput; }
     Eigen::MatrixXf getDeltaOutput() { return deltaOutput; }
     
-    Eigen::MatrixXf forwardPropagation(const Eigen::MatrixXf&);
-    Eigen::MatrixXf backwardPropagation(const Eigen::MatrixXf&);
+    Eigen::MatrixXf forwardPropagation(const Eigen::MatrixXf& input);
+    Eigen::MatrixXf backwardPropagation(const Eigen::MatrixXf& delta);
     
 };
 

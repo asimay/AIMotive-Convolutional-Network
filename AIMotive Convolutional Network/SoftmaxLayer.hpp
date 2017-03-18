@@ -25,8 +25,8 @@ public:
     SoftmaxLayer(std::string layerName) : layerName(layerName) {}
     ~SoftmaxLayer() {}
     
-    Eigen::MatrixXf forwardPropagation(const Eigen::MatrixXf&);
-    Eigen::MatrixXf backwardPropagation(const Eigen::MatrixXf&);
+    Eigen::MatrixXf forwardPropagation(const Eigen::MatrixXf& input);
+    Eigen::MatrixXf backwardPropagation(const Eigen::MatrixXf& delta);
     
 };
 

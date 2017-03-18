@@ -14,5 +14,6 @@ int Layer3D::flatten2DCoordinates(int x, int y, int size) {
 }
 
 int Layer3D::flatten3DCoordinates(int x, int y, int z, int xySize, int zSize) {
+    if (x >= xySize || y >= xySize || z >= zSize) throw "Bad coordinates";
     return flatten2DCoordinates(x, y, xySize) * zSize + z;
 }

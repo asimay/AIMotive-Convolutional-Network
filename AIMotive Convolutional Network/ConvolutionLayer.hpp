@@ -57,9 +57,9 @@ public:
     
     void setPreviousLayer(Layer3D* previousLayer) {
         this->previousLayer = previousLayer;
-        previousLayer->setNextLayer(this);
-        imageSize = (previousLayer->getSize() - 1) / stride + 1;
-        filterMatrix = Eigen::MatrixXf::Random(filterSize * filterSize * previousLayer->getDepth() + 1, filterNumber);
+        //previousLayer->setNextLayer(this);
+        //imageSize = (previousLayer->getSize() - 1) / stride + 1;
+        //filterMatrix = Eigen::MatrixXf::Random(filterSize * filterSize * previousLayer->getDepth() + 1, filterNumber);
     }
     
     void setNextLayer(Layer3D* nextLayer) {

@@ -10,33 +10,16 @@
 
 #define HEADER_LENGTH 138
 
-ImageLoader::ImageLoader(std::string folderPath, int numberOfClasses, int numberOfImages, int imageSize, int numberOfColors) {
-    this->folderPath = folderPath;
-    this->numberOfClasses = numberOfClasses;
-    this->numberOfImages = numberOfImages;
-    this->imageSize = imageSize;
-    this->numberOfColors = numberOfColors;
-    imageMatrices = std::vector<std::vector<Eigen::MatrixXf>>(numberOfClasses, std::vector<Eigen::MatrixXf>(numberOfImages, Eigen::MatrixXf(imageSize*imageSize, numberOfColors)));
-    
-    loadImages();
-}
-
-ImageLoader::~ImageLoader() {
-    
-
-}
-
-
-void ImageLoader::loadImages() {
+void ImageLoader::loadImages(std::string folderPath) {
     for (int classNumber = 0; classNumber < numberOfClasses; classNumber++) {
         for (int imageNumber = 0; imageNumber < numberOfImages; imageNumber++) {
-            loadImage(folderPath, classNumber + 1, imageNumber);
+            imageMatrices[classNumber][imageNumber] = loadImage(folderPath, classNumber + 1, imageNumber);
         }
         std::cout << "Class " << classNumber + 1 << " loaded" << std::endl;
     }
 }
 
-void ImageLoader::loadImage(std::string folderPath, int classNumber, int imageNumber) {
+Eigen::MatrixXf ImageLoader::loadImage(std::string folderPath, int classNumber, int imageNumber) {
     std::string imagePath = getImagePath(folderPath, classNumber, imageNumber);
     
     FILE* inputImage = fopen(imagePath.c_str(), "rb");
@@ -51,16 +34,19 @@ void ImageLoader::loadImage(std::string folderPath, int classNumber, int imageNu
     unsigned char imagePixels[imageSize * imageSize * numberOfColors];
     fread(imagePixels, sizeof(unsigned char), imageSize * imageSize * numberOfColors, inputImage);
     
+    Eigen::MatrixXf imageMatrix = Eigen::MatrixXf::Zero(imageSize * imageSize, numberOfColors);
+    
     for (int x = 0; x < imageSize; x++) {
         for (int y = 0; y < imageSize; y++) {
             for (int color = 0; color < numberOfColors; color++) {
-                imageMatrices[classNumber - 1][imageNumber](flatten2DCoordinates(x, y, imageSize), color) = normalize ((float) imagePixels[flatten3DCoordinates(x, y, color, imageSize, numberOfColors)]);
+                imageMatrix(flatten2DCoordinates(x, y, imageSize), color) = normalize ((float) imagePixels[flatten3DCoordinates(x, y, color, imageSize, numberOfColors)]);
 
             }
         }
     }
     
     fclose(inputImage);
+    return imageMatrix;
 }
 
 std::string ImageLoader::getImagePath(std::string folderPath, int classNumber, int imageNumber) {

@@ -8,7 +8,7 @@
 
 #include "PoolingLayer.hpp"
 
-PoolingLayer::PoolingLayer(Layer3D* previousLayer, int poolingSize) {
+/*PoolingLayer::PoolingLayer(Layer3D* previousLayer, int poolingSize) {
     this->previousLayer = previousLayer;
     previousLayer->setNextLayer(this);
     this->nextLayer = NULL;
@@ -69,5 +69,5 @@ void PoolingLayer::findMaxInPool(Eigen::MatrixXf* inputMatrix, float* maxValue, 
             }
         }
     }
-}
+}*/
 
