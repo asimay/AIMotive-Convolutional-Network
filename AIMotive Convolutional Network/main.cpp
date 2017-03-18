@@ -23,21 +23,18 @@
 #define NUMBER_OF_IMAGES 100
 #define FOLDER_PATH "/Users/pilinszki-nagycsongor/Developer/train-52x52/"
 #define LEARNING_RATE 0.1
+#define LAYER_SIZE 10
 
 int main(int argc, const char * argv[]) {
     
-    FullyConnectedLayer firstLayer = FullyConnectedLayer("First layer", NULL, 5, LEARNING_RATE);
-    FullyConnectedLayer secondLayer = FullyConnectedLayer("Second layer", &firstLayer, 5, LEARNING_RATE);
-    FullyConnectedLayer thirdLayer = FullyConnectedLayer("Third layer", &secondLayer, 5, LEARNING_RATE);
+    srand((unsigned int)time(NULL));
     
-    Eigen::RowVectorXf layer1 = Eigen::RowVectorXf::Random(5);
-    Eigen::RowVectorXf diff = Eigen::RowVectorXf::Random(6);
-    firstLayer.setLayerValue(layer1);
-    thirdLayer.setLayerDelta(diff);
-    
-    firstLayer.forwardPropagation();
-    thirdLayer.backwardPropagation();
-    
+    FullyConnectedLayer layer("First layer", 5, 5, 0.01);
+    Eigen::MatrixXf input = Eigen::MatrixXf::Random(1, 5);
+    Eigen::MatrixXf delta = Eigen::MatrixXf::Random(1, 5)/10.0;
+    layer.forwardPropagation(input);
+    layer.backwardPropagation(delta);
+    layer.adjustWeights();
     return 0;
     
 }
