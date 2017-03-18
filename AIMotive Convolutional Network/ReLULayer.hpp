@@ -16,6 +16,7 @@
 class ReLULayer {
     
 private:
+    const std::string layerName;
     
     Eigen::MatrixXf valueInput;
     Eigen::MatrixXf valueOutput;
@@ -24,7 +25,8 @@ private:
     
 public:
     
-    ReLULayer() : valueInput(Eigen::MatrixXf()), valueOutput(Eigen::MatrixXf()), deltaInput(Eigen::MatrixXf()), deltaOutput(Eigen::MatrixXf()) {}
+    ReLULayer() : layerName(""),  valueInput(Eigen::MatrixXf()), valueOutput(Eigen::MatrixXf()), deltaInput(Eigen::MatrixXf()), deltaOutput(Eigen::MatrixXf()) {}
+    ReLULayer(std::string layerName) : layerName(layerName),  valueInput(Eigen::MatrixXf()), valueOutput(Eigen::MatrixXf()), deltaInput(Eigen::MatrixXf()), deltaOutput(Eigen::MatrixXf()) {}
     ~ReLULayer() {}
     
     Eigen::MatrixXf getValueInput() { return valueInput; }

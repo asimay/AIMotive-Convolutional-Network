@@ -28,6 +28,6 @@ void FullyConnectedLayer::adjustWeights() {
     Eigen::MatrixXf delta = -valueInput.transpose() * deltaInput * learningRate;
     std::cout << "Weights:" << std::endl << layerWeights << std::endl;
     std::cout << "Delta:" << std::endl << delta << std::endl;
-    layerWeights -= delta;
-    layerWeights *= 0.99;
+    layerWeights *= 0.999;
+    layerWeights += delta;
 }
