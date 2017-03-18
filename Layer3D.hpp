@@ -16,20 +16,6 @@ class Layer3D {
     
 public:
     
-    Layer3D() {}
-    virtual ~Layer3D() {}
-    
-    virtual Eigen::MatrixXf* getValue() = 0;
-    virtual Eigen::MatrixXf* getDelta() = 0;
-    
-    virtual int getSize() = 0;
-    virtual int getDepth() = 0;
-    
-    virtual void setNextLayer(Layer3D* nextLayer) = 0;
-    
-    virtual void forwardPropagation() = 0;
-    virtual void backwardPropagation() = 0;
-    
     static int flatten2DCoordinates(int x, int y, int size);
     static int flatten3DCoordinates(int x, int y, int z, int xySize, int zSize);
     

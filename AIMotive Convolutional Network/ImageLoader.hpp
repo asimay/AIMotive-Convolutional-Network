@@ -17,40 +17,28 @@
 class ImageLoader : public Layer3D {
     
 private:
-    Layer3D* nextLayer;
     
-    int numberOfClasses;
-    int numberOfImages;
-    int imageSize;
-    int numberOfColors;
-    
-    std::string folderPath;
+    const int numberOfClasses;
+    const int numberOfImages;
+    const int imageSize;
+    const int numberOfColors;
     
     std::vector<std::vector<Eigen::MatrixXf>> imageMatrices;
-    Eigen::MatrixXf outputImage;
-    
-    //Normalizes the pixel values
-    void normalizePixel(unsigned char pixelValue);
     
 public:
-    ImageLoader(std::string folderPath, int numberOfClasses, int numberOfImages, int imageSize, int numberOfColors);
-    ~ImageLoader();
+    ImageLoader() : numberOfClasses(0), numberOfImages(0), imageSize(0), numberOfColors(0), imageMatrices(std::vector<std::vector<Eigen::MatrixXf>>()) {}
+    ImageLoader(int numberOfClasses, int numberOfImages, int imageSize, int numberOfColors) : numberOfClasses(numberOfClasses), numberOfImages(numberOfImages), imageSize(imageSize), numberOfColors(numberOfColors) {
+        imageMatrices = std::vector<std::vector<Eigen::MatrixXf>>(numberOfClasses, std::vector<Eigen::MatrixXf>(numberOfImages, Eigen::MatrixXf()));
+    }
+    ~ImageLoader() {}
     
-    Eigen::MatrixXf* getOutput() { return &outputImage; }
-    int getSize() { return imageSize; }
-    int getDepth() { return numberOfColors; }
-    
-    void setPreviousLayer(Layer3D* previousLayer) {}
-    void setNextLayer(Layer3D* nextLayer) { this->nextLayer = nextLayer; }
-    
-    void forwardPropagation() { nextLayer->forwardPropagation(); }
-    void backwardPropagation() {}
-    
-    void loadImages();
-    void loadImage(std::string, int, int);
-    std::string getImagePath(std::string, int, int);
-    int numberOfDigits(int);
-    float normalize(float);
+    void loadImages(std::string floderPath);
+    Eigen::MatrixXf loadImage(std::string folderPath, int classNumber, int imageNumber);
+    static std::string getImagePath(std::string folderPath, int classNumber, int imageNumber);
+    static float normalize(float number);
+    static int numberOfDigits(int number);
+    Eigen::MatrixXf getImageMatrix(int imageClass, int imageNumber) { return imageMatrices[imageClass][imageNumber]; }
+
 };
 
 #endif /* ImageLoader_hpp */
