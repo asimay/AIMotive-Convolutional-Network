@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA03E3AA1E7D79FF006A8372 /* SoftmaxLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA03E3A81E7D79FF006A8372 /* SoftmaxLayer.cpp */; };
 		FA07FDBD1E7482A9005AFC15 /* Layer3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA07FDBB1E7482A9005AFC15 /* Layer3D.cpp */; };
 		FA07FDC01E756AD1005AFC15 /* ReLULayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA07FDBE1E756AD1005AFC15 /* ReLULayer.cpp */; };
 		FA07FDC31E75A4CF005AFC15 /* PoolingLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA07FDC11E75A4CF005AFC15 /* PoolingLayer.cpp */; };
@@ -30,6 +31,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FA03E3A81E7D79FF006A8372 /* SoftmaxLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoftmaxLayer.cpp; sourceTree = "<group>"; };
+		FA03E3A91E7D79FF006A8372 /* SoftmaxLayer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SoftmaxLayer.hpp; sourceTree = "<group>"; };
 		FA07FDBB1E7482A9005AFC15 /* Layer3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Layer3D.cpp; path = ../Layer3D.cpp; sourceTree = "<group>"; };
 		FA07FDBC1E7482A9005AFC15 /* Layer3D.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Layer3D.hpp; path = ../Layer3D.hpp; sourceTree = "<group>"; };
 		FA07FDBE1E756AD1005AFC15 /* ReLULayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReLULayer.cpp; sourceTree = "<group>"; };
@@ -79,6 +82,8 @@
 			isa = PBXGroup;
 			children = (
 				FAECDE451E5329CC00BCD1E7 /* main.cpp */,
+				FA03E3A81E7D79FF006A8372 /* SoftmaxLayer.cpp */,
+				FA03E3A91E7D79FF006A8372 /* SoftmaxLayer.hpp */,
 				FAAEEF1D1E65B21400BFDB29 /* SignRecognition.cpp */,
 				FAAEEF1E1E65B21400BFDB29 /* SignRecognition.hpp */,
 				FA07FDBB1E7482A9005AFC15 /* Layer3D.cpp */,
@@ -162,6 +167,7 @@
 				FAECDE461E5329CC00BCD1E7 /* main.cpp in Sources */,
 				FAFE0C8E1E6A05B30034A5DD /* ConvolutionLayer.cpp in Sources */,
 				FAFE0C8B1E69BA2A0034A5DD /* ImageLoader.cpp in Sources */,
+				FA03E3AA1E7D79FF006A8372 /* SoftmaxLayer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
