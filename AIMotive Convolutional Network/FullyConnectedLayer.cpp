@@ -8,63 +8,26 @@
 
 #include "FullyConnectedLayer.hpp"
 
-void FullyConnectedLayer::forwardPropagation() {
-    std::cout << layerName << " - Forward propagation" << std::endl;
-    
-    calculateLayerValue();
-    
-    if (nextLayer != NULL) {
-        nextLayer->forwardPropagation();
-    }
+Eigen::MatrixXf FullyConnectedLayer::forwardPropagation(const Eigen::MatrixXf& input) {
+    valueInput = input;
+    valueInput.conservativeResize(valueInput.rows(), valueInput.cols() + 1);
+    valueInput.col(valueInput.cols() - 1) = Eigen::VectorXf::Ones(valueInput.rows());
+    valueOutput = valueInput * layerWeights;
+    return valueOutput;
 }
 
-void FullyConnectedLayer::backwardPropagation() {
-    std::cout << layerName << " - Backward propagation" << std::endl;
-    
-    calculateLayerDelta();
-    
-    if (previousLayer != NULL) {
-        adjustWeights();
-        previousLayer->backwardPropagation();
-    }
+Eigen::MatrixXf FullyConnectedLayer::backwardPropagation(const Eigen::MatrixXf& delta) {
+    deltaInput = delta;
+    deltaOutput = deltaInput * layerWeights.transpose();
+    deltaOutput.conservativeResize(deltaOutput.rows(), deltaOutput.cols() - 1);
+    return deltaOutput;
 }
 
-void FullyConnectedLayer::calculateLayerValue() {
-    if (previousLayer != NULL) {
-        std::cout << layerName << " - Calculating layer value" << std::endl;
-        layerValue = previousLayer->getLayerValue();
-        layerValue.conservativeResize(layerValue.size() + 1);
-        layerValue(layerValue.size() - 1) = 1.0;
-        layerValue *= layerWeight;
-        layerValue /= layerWeight.rows();
-        
-        for (int i = 0; i < layerValue.size(); i++) {
-            if (layerValue(i) < 0.0) layerValue(i) = 0.0;
-        }
-        std::cout << "Layer value:" << std::endl << layerValue << std::endl;
-    }
-}
-
-void FullyConnectedLayer::calculateLayerDelta() {
-    if ((previousLayer != NULL)&&(nextLayer != NULL)) {
-        std::cout << layerName << " - Calculating layer delta" << std::endl;
-        layerDelta = nextLayer->getLayerDelta();
-        layerDelta.conservativeResize(layerDelta.size() - 1);
-        layerDelta *= layerWeight.transpose();
-        layerDelta /= layerWeight.cols();
-        
-        for (int i = 0; i < layerDelta.size()-1; i++) {
-            if (layerValue(i) < 0.0) layerDelta(i) = 0.0;
-        }
-    }
-}
 
 void FullyConnectedLayer::adjustWeights() {
-    if (previousLayer != NULL) {
-        std::cout << layerName << " - Adjusting weights" << std::endl;
-        std::cout << "Before:" << std::endl << layerWeight << std::endl;
-        layerWeight -= (layerDelta.transpose() * previousLayer->getLayerValue()) * learningRate;
-        std::cout << "After:" << std::endl << layerWeight << std::endl;
-        std::cout << "Difference:" << std::endl << (layerDelta.transpose() * previousLayer->getLayerValue()) * learningRate << std::endl;
-    }
+    Eigen::MatrixXf delta = -valueInput.transpose() * deltaInput * learningRate;
+    std::cout << "Weights:" << std::endl << layerWeights << std::endl;
+    std::cout << "Delta:" << std::endl << delta << std::endl;
+    layerWeights -= delta;
+    layerWeights *= 0.99;
 }

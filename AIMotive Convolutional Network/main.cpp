@@ -23,17 +23,17 @@
 #define NUMBER_OF_IMAGES 100
 #define FOLDER_PATH "/Users/pilinszki-nagycsongor/Developer/train-52x52/"
 #define LEARNING_RATE 0.1
+#define LAYER_SIZE 10
 
 int main(int argc, const char * argv[]) {
+    srand((unsigned int)time(NULL));
     
-    Eigen::MatrixXf input = Eigen::MatrixXf::Random(1, 10);
-    Eigen::MatrixXf delta = Eigen::MatrixXf::Random(1, 10);
-    ReLULayer layer = ReLULayer();
-    std::cout << input << std::endl;
-    std::cout << delta << std::endl;
-    std::cout << layer.forwardPropagation(input) << std::endl;
-    std::cout << layer.backwardPropagation(delta) << std::endl;
-    
+    FullyConnectedLayer layer("First layer", 5, 5, 0.01);
+    Eigen::MatrixXf input = Eigen::MatrixXf::Random(1, 5);
+    Eigen::MatrixXf delta = Eigen::MatrixXf::Random(1, 5)/10.0;
+    layer.forwardPropagation(input);
+    layer.backwardPropagation(delta);
+    layer.adjustWeights();
     return 0;
     
 }
