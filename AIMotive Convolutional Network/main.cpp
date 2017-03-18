@@ -26,17 +26,13 @@
 
 int main(int argc, const char * argv[]) {
     
-    FullyConnectedLayer firstLayer = FullyConnectedLayer("First layer", NULL, 5, LEARNING_RATE);
-    FullyConnectedLayer secondLayer = FullyConnectedLayer("Second layer", &firstLayer, 5, LEARNING_RATE);
-    FullyConnectedLayer thirdLayer = FullyConnectedLayer("Third layer", &secondLayer, 5, LEARNING_RATE);
-    
-    Eigen::RowVectorXf layer1 = Eigen::RowVectorXf::Random(5);
-    Eigen::RowVectorXf diff = Eigen::RowVectorXf::Random(6);
-    firstLayer.setLayerValue(layer1);
-    thirdLayer.setLayerDelta(diff);
-    
-    firstLayer.forwardPropagation();
-    thirdLayer.backwardPropagation();
+    Eigen::MatrixXf input = Eigen::MatrixXf::Random(1, 10);
+    Eigen::MatrixXf delta = Eigen::MatrixXf::Random(1, 10);
+    ReLULayer layer = ReLULayer();
+    std::cout << input << std::endl;
+    std::cout << delta << std::endl;
+    std::cout << layer.forwardPropagation(input) << std::endl;
+    std::cout << layer.backwardPropagation(delta) << std::endl;
     
     return 0;
     

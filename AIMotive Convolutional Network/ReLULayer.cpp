@@ -8,35 +8,20 @@
 
 #include "ReLULayer.hpp"
 
-ReLULayer::ReLULayer(Layer3D* previousLayer) {
-    this->previousLayer = previousLayer;
-    previousLayer->setNextLayer(this);
-    this->nextLayer = NULL;
-    
-    layerValue = Eigen::MatrixXf();
-    layerDelta = Eigen::MatrixXf();
-    
-    layerSize = previousLayer->getSize();
-    layerDepth = previousLayer->getDepth();
-}
-
-void ReLULayer::forwardPropagation() {
-    layerValue = *previousLayer->getValue();
-    for (int row = 0; row < layerSize * layerSize; row++) {
-        for (int col= 0; col < layerDepth; col++) {
-            if (layerValue(row, col) < 0.0 )
-                layerValue(row, col) = 0.0;
-        }
+Eigen::MatrixXf ReLULayer::forwardPropagation(const Eigen::MatrixXf& input) {
+    valueInput = input;
+    valueOutput = valueInput;
+    for (int i = 0; i < valueOutput.size(); i++ ) {
+        if (valueInput(i) < 0.0) valueOutput(i) = 0.0;
     }
+    return valueOutput;
 }
 
-void ReLULayer::backwardPropagation() {
-    layerDelta = *nextLayer->getDelta();
-    for (int row = 0; row < layerSize * layerSize; row++) {
-        for (int col= 0; col < layerDepth; col++) {
-            if (layerValue(row, col) < 0.0 )
-                layerDelta(row, col) = 0.0;
-        }
+Eigen::MatrixXf ReLULayer::backwardPropagation(const Eigen::MatrixXf& delta) {
+    deltaInput = delta;
+    deltaOutput = deltaInput;
+    for (int i = 0; i < deltaOutput.size(); i++) {
+        if (valueInput(i) < 0.0) deltaOutput(i) = 0.0;
     }
+    return deltaOutput;
 }
-
