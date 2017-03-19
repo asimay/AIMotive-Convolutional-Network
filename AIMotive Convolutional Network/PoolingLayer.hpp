@@ -16,38 +16,32 @@
 class PoolingLayer : public Layer3D {
 
 private:
+    const std::string layerName;
     
-    Layer3D* previousLayer;
-    Layer3D* nextLayer;
+    const int previousSize;
+    const int nextSize;
+    const int poolingSize;
+    const int layerDepth;
     
-    Eigen::MatrixXf layerValue;
-    Eigen::MatrixXf layerDelta;
-    Eigen::MatrixXd layerIndex;
-    
-    int layerSize;
-    int layerDepth;
-    int poolingSize;
+    Eigen::MatrixXf valueInput;
+    Eigen::MatrixXf valueOutput;
+    Eigen::MatrixXf maxIndices;
+    Eigen::MatrixXf deltaInput;
+    Eigen::MatrixXf deltaOutput;
     
 public:
-    
-    PoolingLayer(Layer3D* previousLayer, int poolingSize);
+    PoolingLayer() : layerName(""), previousSize(0), nextSize(0), poolingSize(0), layerDepth(0), valueInput(Eigen::MatrixXf()), valueOutput(Eigen::MatrixXf()), maxIndices(Eigen::MatrixXf()), deltaInput(Eigen::MatrixXf()), deltaOutput(Eigen::MatrixXf()) {}
+    PoolingLayer(std::string layerName, int previousSize, int nextSize, int poolingSize, int layerDepth) : layerName(layerName), previousSize(previousSize), nextSize(nextSize), poolingSize(poolingSize), layerDepth(layerDepth), valueInput(Eigen::MatrixXf()), valueOutput(Eigen::MatrixXf()), maxIndices(Eigen::MatrixXf()), deltaInput(Eigen::MatrixXf()), deltaOutput(Eigen::MatrixXf()) {}
     ~PoolingLayer() {}
     
-    Eigen::MatrixXf* getValue() { return &layerValue; }
-    Eigen::MatrixXf* getDelta() { return &layerDelta; }
+    Eigen::MatrixXf getValueInput() { return valueInput; }
+    Eigen::MatrixXf getValueOutput() { return valueOutput; }
+    Eigen::MatrixXf getMaxIndices() { return maxIndices; }
+    Eigen::MatrixXf getDeltaInput() { return deltaInput; }
+    Eigen::MatrixXf getDeltaOutput() { return deltaOutput; }
     
-    int getSize() { return layerSize; }
-    int getDepth() { return layerDepth; }
-    
-    void setNextLayer(Layer3D* nextLayer) {
-        this->nextLayer = nextLayer;
-    }
-    
-    void forwardPropagation();
-    void backwardPropagation();
-    
-    static void findMaxValues(Eigen::MatrixXf* inputMatrix, Eigen::MatrixXf* outputMatrix, Eigen::MatrixXd* indexMatrix, int inputSize, int inputDepth, int poolingSize);
-    static void findMaxInPool(Eigen::MatrixXf* inputMatrix, float* maxValue, int* maxIndex, int inputSize, int poolingSize, int poolX, int poolY, int poolingDepth);
+    Eigen::MatrixXf forwardPropagation(const Eigen::MatrixXf& input);
+    Eigen::MatrixXf backwardPropagation(const Eigen::MatrixXf& delta);
 };
 
 #endif /* PoolingLayer_hpp */
