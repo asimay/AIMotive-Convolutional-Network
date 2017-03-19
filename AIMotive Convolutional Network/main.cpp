@@ -29,12 +29,6 @@
 int main(int argc, const char * argv[]) {
     srand((unsigned int)time(NULL));
     
-    PoolingLayer layer = PoolingLayer("Pooling layer", 6, 2, 3, 1);
-    Eigen::MatrixXf input = Eigen::MatrixXf::Random(36, 1);
-    std::cout << input << std::endl << std::endl;
-    std::cout << layer.forwardPropagation(input) << std::endl << std::endl;
-    std::cout << layer.getMaxIndices() << std::endl << std::endl;
-    
     return 0;
     
 }

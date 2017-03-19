@@ -41,7 +41,7 @@ public:
     Eigen::MatrixXf getDeltaOutput() { return deltaOutput; }
     
     Eigen::MatrixXf forwardPropagation(const Eigen::MatrixXf& input);
-    void backwardPropagation();
+    Eigen::MatrixXf backwardPropagation(const Eigen::MatrixXf& delta);
 };
 
 #endif /* PoolingLayer_hpp */

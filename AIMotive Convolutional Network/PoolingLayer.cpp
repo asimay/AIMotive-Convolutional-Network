@@ -31,31 +31,15 @@ Eigen::MatrixXf PoolingLayer::forwardPropagation(const Eigen::MatrixXf& input) {
     return valueOutput;
 }
 
-/*void PoolingLayer::backwardPropagation() {
-    int previousSize = previousLayer->getSize();
-    int previousDepth = previousLayer->getDepth();
-    layerDelta = Eigen::MatrixXf::Zero(previousSize*previousSize, previousDepth);
-    for (int row = 0; row < layerSize*layerSize; row++) {
-        for (int col = 0; col < layerDepth; col++) {
-            layerDelta(layerIndex(row, col), col) = (*nextLayer->getDelta())(row, col);
-        }
-    }
-}
-
-void PoolingLayer::findMaxValues(Eigen::MatrixXf* inputMatrix, Eigen::MatrixXf* outputMatrix, Eigen::MatrixXd* indexMatrix, int inputSize, int inputDepth, int poolingSize) {
-    float maxValue;
-    int maxIndex;
-    int outputSize = (inputSize - 1) / poolingSize + 1;
-    for (int poolX = 0; poolX < outputSize; poolX++) {
-        for (int poolY = 0; poolY < outputSize; poolY++) {
-            for (int depth = 0; depth < inputDepth; depth++) {
-                maxValue = -1;
-                maxIndex = 0;
-                findMaxInPool(inputMatrix, &maxValue, &maxIndex, inputSize, poolingSize, poolX, poolY, depth);
-                (*outputMatrix)(flatten2DCoordinates(poolX, poolY, outputSize), depth) = maxValue;
-                (*indexMatrix)(flatten2DCoordinates(poolX, poolY, outputSize), depth) = maxIndex;
+Eigen::MatrixXf PoolingLayer::backwardPropagation(const Eigen::MatrixXf& delta) {
+    deltaInput = delta;
+    deltaOutput = Eigen::MatrixXf::Zero(previousSize * previousSize, layerDepth);
+    for (int x = 0; x < nextSize; x++) {
+        for (int y = 0; y < nextSize; y++) {
+            for (int depth = 0; depth < layerDepth; depth++) {
+                deltaOutput(maxIndices(flatten2DCoordinates(x, y, nextSize), depth), depth) = deltaInput(flatten2DCoordinates(x, y, nextSize), depth);
             }
         }
     }
-}*/
-
+    return deltaOutput;
+}
