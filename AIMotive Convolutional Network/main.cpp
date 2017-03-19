@@ -29,13 +29,13 @@
 int main(int argc, const char * argv[]) {
     srand((unsigned int)time(NULL));
     
-    ConvolutionLayer layer("", 5, 1, 5, 5, 10, 1);
-    Eigen::MatrixXf input = Eigen::MatrixXf::Random(25, 1);
+    ConvolutionLayer layer("", 4, 1, 4, 3, 1, 1);
+    Eigen::MatrixXf input = Eigen::MatrixXf::Random(16, 1);
     Eigen::MatrixXf output = input;
     //input << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16;
-    for (int i = 0; i < 10; i++) {
-        output = layer.forwardPropagation(output);
-        std::cout << output << std::endl << std::endl;
+    for (int i = 0; i < 100; i++) {
+        input = layer.backwardPropagation(input);
+        std::cout << input << std::endl << std::endl;
     }
     
     return 0;

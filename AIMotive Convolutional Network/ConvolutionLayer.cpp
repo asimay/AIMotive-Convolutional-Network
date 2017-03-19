@@ -37,9 +37,34 @@ Eigen::MatrixXf ConvolutionLayer::flattenReceptiveFields(const Eigen::MatrixXf& 
     return flattenMatrix;
 }
 
-/*void ConvolutionLayer::backwardPropagation() {
-    
-}*/
+Eigen::MatrixXf ConvolutionLayer::backwardPropagation(const Eigen::MatrixXf& delta) {
+    deltaInput = delta;
+    deltaOutput = deltaInput * layerFilters.transpose();
+    deltaOutput.conservativeResize(deltaOutput.rows(), deltaOutput.cols() - 1);
+    deltaOutput = reorderReceptiveFields(deltaOutput);
+    return deltaOutput;
+}
+
+Eigen::MatrixXf ConvolutionLayer::reorderReceptiveFields(const Eigen::MatrixXf& delta) {
+    Eigen::MatrixXf reorderMatrix = Eigen::MatrixXf::Zero(previousSize * previousSize, previousDepth);
+    int newX;
+    int newY;
+    for (int x = 0; x < nextSize; x++) {
+        for (int y = 0; y < nextSize; y++) {
+            for (int shiftX = 0; shiftX < filterSize; shiftX++) {
+                for (int shiftY = 0; shiftY < filterSize; shiftY++) {
+                    for (int depth = 0; depth < previousDepth; depth++) {
+                        newX = x * stride + shiftX - filterSize/2;
+                        newY = y * stride + shiftY - filterSize/2;
+                        if (newX < 0 || newX >= previousSize || newY < 0 || newY >= previousSize) break;
+                        reorderMatrix(flatten2DCoordinates(newX, newY, previousSize), depth) += delta(flatten2DCoordinates(x, y, nextSize), flatten3DCoordinates(shiftX, shiftY, depth, filterSize, previousDepth));
+                    }
+                }
+            }
+        }
+    }
+    return reorderMatrix;
+}
 
 /*Eigen::MatrixXf ConvolutionLayer::flattenMatrix(Eigen::MatrixXf* inputMatrix, int inputSize, int inputDepth, int filterSize, int stride) {
     int flattenSize = (inputSize-1) / stride + 1;

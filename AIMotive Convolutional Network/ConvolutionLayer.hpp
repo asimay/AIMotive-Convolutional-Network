@@ -35,7 +35,7 @@ public:
     
     ConvolutionLayer() : layerName(""), previousSize(0), previousDepth(0),  nextSize(0), filterSize(0), filterNumber(0), stride(0), layerFilters(Eigen::MatrixXf()), valueInput(Eigen::MatrixXf()), valueOutput(Eigen::MatrixXf()), deltaInput(Eigen::MatrixXf()), deltaOutput(Eigen::MatrixXf()) {}
     ConvolutionLayer(std::string layerName, int previousSize, int previousDepth, int nextSize, int filterSize, int filterNumber, int stride) : layerName(layerName), previousSize(previousSize), previousDepth(previousDepth), nextSize(nextSize), filterSize(filterSize), filterNumber(filterNumber), stride(stride), layerFilters(Eigen::MatrixXf()), valueInput(Eigen::MatrixXf()), valueOutput(Eigen::MatrixXf()), deltaInput(Eigen::MatrixXf()), deltaOutput(Eigen::MatrixXf()) {
-        layerFilters = Eigen::MatrixXf::Ones(filterSize * filterSize * previousDepth + 1, filterNumber) * sqrt(2.0/(filterSize * filterSize * previousDepth + 1)) / (filterSize * filterSize);
+        layerFilters = Eigen::MatrixXf::Ones(filterSize * filterSize * previousDepth + 1, filterNumber) * sqrt(2.0/(filterSize * filterSize * previousDepth + 1)) / filterSize;
     }
     ~ConvolutionLayer() {}
     
@@ -43,6 +43,7 @@ public:
     Eigen::MatrixXf backwardPropagation(const Eigen::MatrixXf& delta);
     
     Eigen::MatrixXf flattenReceptiveFields(const Eigen::MatrixXf& input);
+    Eigen::MatrixXf reorderReceptiveFields(const Eigen::MatrixXf& delta);
     
 };
 
