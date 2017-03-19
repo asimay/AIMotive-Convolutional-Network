@@ -8,40 +8,40 @@
 
 #include "ConvolutionLayer.hpp"
 
-ConvolutionLayer::ConvolutionLayer(int filterSize, int filterNumber, int stride) {
-    
-    previousLayer = NULL;
-    nextLayer = NULL;
-    
-    this->filterSize = filterSize;
-    this->filterNumber = filterNumber;
-    this->stride = stride;
-    
-    this->inputMatrix = Eigen::MatrixXf();
-    this->filterMatrix = Eigen::MatrixXf();
-    this->outputMatrix = Eigen::MatrixXf();
-    this->deltaInputMatrix = Eigen::MatrixXf();
-    this->deltaOutputMatrix = Eigen::MatrixXf();
-
+Eigen::MatrixXf ConvolutionLayer::forwardPropagation(const Eigen::MatrixXf& input) {
+    valueInput = flattenReceptiveFields(input);
+    valueInput.conservativeResize(valueInput.rows(), valueInput.cols() + 1);
+    valueInput.col(valueInput.cols() - 1) = Eigen::VectorXf::Ones(valueInput.rows());
+    valueOutput = valueInput * layerFilters;
+    return valueOutput;
 }
 
-ConvolutionLayer::~ConvolutionLayer() {
-    
+Eigen::MatrixXf ConvolutionLayer::flattenReceptiveFields(const Eigen::MatrixXf& input) {
+    Eigen::MatrixXf flattenMatrix = Eigen::MatrixXf::Zero(nextSize * nextSize, filterSize * filterSize * previousDepth);
+    int newX;
+    int newY;
+    for (int x = 0; x < nextSize; x++) {
+        for (int y = 0; y < nextSize; y++) {
+            for (int shiftX = 0; shiftX < filterSize; shiftX++) {
+                for (int shiftY = 0; shiftY < filterSize; shiftY++) {
+                    for (int depth = 0; depth < previousDepth; depth++) {
+                        newX = x * stride + shiftX - filterSize/2;
+                        newY = y * stride + shiftY - filterSize/2;
+                        if (newX < 0 || newX >= previousSize || newY < 0 || newY >= previousSize) break;
+                        flattenMatrix(flatten2DCoordinates(x, y, nextSize), flatten3DCoordinates(shiftX, shiftY, depth, filterSize, previousDepth)) = input(flatten2DCoordinates(newX, newY, previousSize), depth);
+                    }
+                }
+            }
+        }
+    }
+    return flattenMatrix;
 }
 
-void ConvolutionLayer::forwardPropagation() {
-    /*inputMatrix = flattenMatrix(previousLayer->getOutput(), previousLayer->getSize(), (int)previousLayer->getOutput()->cols(), this->filterSize, this->stride);
-    addBiasColumn(&inputMatrix);
+/*void ConvolutionLayer::backwardPropagation() {
     
-    outputMatrix = inputMatrix * filterMatrix;
-    outputMatrix /= filterMatrix.rows();*/
-}
+}*/
 
-void ConvolutionLayer::backwardPropagation() {
-    
-}
-
-Eigen::MatrixXf ConvolutionLayer::flattenMatrix(Eigen::MatrixXf* inputMatrix, int inputSize, int inputDepth, int filterSize, int stride) {
+/*Eigen::MatrixXf ConvolutionLayer::flattenMatrix(Eigen::MatrixXf* inputMatrix, int inputSize, int inputDepth, int filterSize, int stride) {
     int flattenSize = (inputSize-1) / stride + 1;
     Eigen::MatrixXf flattenMatrix = Eigen::MatrixXf::Zero(flattenSize * flattenSize, filterSize * filterSize * inputDepth);
     
@@ -53,7 +53,7 @@ Eigen::MatrixXf ConvolutionLayer::flattenMatrix(Eigen::MatrixXf* inputMatrix, in
     return flattenMatrix;
 }
 
-Eigen::VectorXf ConvolutionLayer::flattenReceptiveField(Eigen::MatrixXf* inputMatrix, int inputSize, int inputDepth, int inputX, int inputY, int filterSize) {
+Eigen::VectorXf ConvolutionLayer::flattenReceptiveField(const Eigen::MatrixXf& input, int inputSize, int inputDepth, int inputX, int inputY, int filterSize) {
     int newX;
     int newY;
     Eigen::VectorXf flattenField = Eigen::VectorXf::Zero(filterSize * filterSize * inputDepth);
@@ -104,7 +104,7 @@ void ConvolutionLayer::reorderReceptiveField(Eigen::MatrixXf *inputMatrix, Eigen
             }
         }
     }
-}
+}*/
 
 
 
