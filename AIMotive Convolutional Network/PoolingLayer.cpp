@@ -8,27 +8,30 @@
 
 #include "PoolingLayer.hpp"
 
-/*PoolingLayer::PoolingLayer(Layer3D* previousLayer, int poolingSize) {
-    this->previousLayer = previousLayer;
-    previousLayer->setNextLayer(this);
-    this->nextLayer = NULL;
-    
-    layerValue = Eigen::MatrixXf();
-    layerDelta = Eigen::MatrixXf();
-    
-    layerSize = (previousLayer->getSize() - 1) / poolingSize + 1;
-    layerDepth = previousLayer->getDepth();
-    this->poolingSize = poolingSize;
+Eigen::MatrixXf PoolingLayer::forwardPropagation(const Eigen::MatrixXf& input) {
+    valueInput = input;
+    valueOutput = Eigen::MatrixXf::Zero(nextSize * nextSize, layerDepth);
+    maxIndices = Eigen::MatrixXf::Zero(nextSize * nextSize, layerDepth);
+    for (int x = 0; x < nextSize; x++) {
+        for (int y = 0; y < nextSize; y++) {
+            for (int depth = 0; depth < layerDepth; depth++) {
+                valueOutput(flatten2DCoordinates(x, y, nextSize), depth) = valueInput(flatten2DCoordinates(x * poolingSize, y * poolingSize, previousSize), depth);
+                maxIndices(flatten2DCoordinates(x, y, nextSize), depth) = flatten2DCoordinates(x * poolingSize, y * poolingSize, previousSize);
+                for (int shiftX = 0; shiftX < poolingSize; shiftX++) {
+                    for(int shiftY = 0; shiftY < poolingSize; shiftY++) {
+                        if (valueInput(flatten2DCoordinates(x * poolingSize + shiftX, y * poolingSize + shiftY, previousSize), depth) > valueOutput(flatten2DCoordinates(x, y, nextSize), depth)) {
+                            valueOutput(flatten2DCoordinates(x, y, nextSize), depth) = valueInput(flatten2DCoordinates(x * poolingSize + shiftX, y * poolingSize + shiftY, previousSize), depth);
+                            maxIndices(flatten2DCoordinates(x, y, nextSize), depth) = flatten2DCoordinates(x * poolingSize + shiftX, y * poolingSize + shiftY, previousSize);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return valueOutput;
 }
 
-void PoolingLayer::forwardPropagation() {
-    layerValue = Eigen::MatrixXf::Zero(layerSize*layerSize, layerDepth);
-    layerIndex = Eigen::MatrixXd::Zero(layerSize*layerSize, layerDepth);
-    findMaxValues(previousLayer->getValue(), &layerValue, &layerIndex, previousLayer->getSize(), previousLayer->getDepth(), poolingSize);
-    
-}
-
-void PoolingLayer::backwardPropagation() {
+/*void PoolingLayer::backwardPropagation() {
     int previousSize = previousLayer->getSize();
     int previousDepth = previousLayer->getDepth();
     layerDelta = Eigen::MatrixXf::Zero(previousSize*previousSize, previousDepth);
@@ -51,21 +54,6 @@ void PoolingLayer::findMaxValues(Eigen::MatrixXf* inputMatrix, Eigen::MatrixXf* 
                 findMaxInPool(inputMatrix, &maxValue, &maxIndex, inputSize, poolingSize, poolX, poolY, depth);
                 (*outputMatrix)(flatten2DCoordinates(poolX, poolY, outputSize), depth) = maxValue;
                 (*indexMatrix)(flatten2DCoordinates(poolX, poolY, outputSize), depth) = maxIndex;
-            }
-        }
-    }
-}
-
-void PoolingLayer::findMaxInPool(Eigen::MatrixXf* inputMatrix, float* maxValue, int* maxIndex, int inputSize, int poolingSize, int poolX, int poolY, int poolingDepth) {
-    int newX, newY;
-    for (int shiftX = 0; shiftX < poolingSize; shiftX++) {
-        for (int shiftY = 0; shiftY < poolingSize; shiftY++) {
-            newX = flatten2DCoordinates(poolX, shiftX, poolingSize);
-            newY = flatten2DCoordinates(poolY, shiftY, poolingSize);
-            if (newX >= inputSize || newY >= inputSize) break;
-            if ((*inputMatrix)(flatten2DCoordinates(newX, newY, inputSize), poolingDepth) > *maxValue) {
-                *maxValue = (*inputMatrix)(flatten2DCoordinates(newX, newY, inputSize), poolingDepth);
-                *maxIndex = flatten2DCoordinates(newX, newY, inputSize);
             }
         }
     }

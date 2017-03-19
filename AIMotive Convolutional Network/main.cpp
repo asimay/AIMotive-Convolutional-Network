@@ -29,10 +29,11 @@
 int main(int argc, const char * argv[]) {
     srand((unsigned int)time(NULL));
     
-    ImageLoader imageLoader(2, 5000, 52, 3);
-    
-    imageLoader.loadImages(FOLDER_PATH);
-    std::cout << imageLoader.getImageMatrix(0, 0) << std::endl;
+    PoolingLayer layer = PoolingLayer("Pooling layer", 6, 2, 3, 1);
+    Eigen::MatrixXf input = Eigen::MatrixXf::Random(36, 1);
+    std::cout << input << std::endl << std::endl;
+    std::cout << layer.forwardPropagation(input) << std::endl << std::endl;
+    std::cout << layer.getMaxIndices() << std::endl << std::endl;
     
     return 0;
     
