@@ -14,7 +14,7 @@
 #include "Layer3D.hpp"
 
 //A class that loads and stores all the pictures for the convolutional network.
-class ImageLoader : public Layer3D {
+class ImageLoader {
     
 private:
     

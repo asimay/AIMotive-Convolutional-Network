@@ -13,7 +13,7 @@
 #include "Layer3D.hpp"
 #include <iostream>
 
-class ConvolutionLayer : public Layer3D {
+class ConvolutionLayer {
     
 private:
     const std::string layerName;

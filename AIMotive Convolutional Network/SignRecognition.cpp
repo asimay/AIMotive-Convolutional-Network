@@ -23,8 +23,9 @@ void SignRecognition::performRecognition1() {
     PoolingLayer layer10 = PoolingLayer("10th layer", 4, 2, 2, 48);
     ReLULayer layer11 = ReLULayer("11th layer");
     FullyConnectedLayer layer12 = FullyConnectedLayer("12th layer", 48, 192, LEARNING_RATE);
-    FullyConnectedLayer layer13 = FullyConnectedLayer("13th layer", 12, 48, LEARNING_RATE);
-    SoftmaxLayer layer14 = SoftmaxLayer("14th layer");
+    ReLULayer layer13 = ReLULayer("13th layer");
+    FullyConnectedLayer layer14 = FullyConnectedLayer("14th layer", 12, 48, LEARNING_RATE);
+    SoftmaxLayer layer15 = SoftmaxLayer("15th layer");
     
     
     int success = 0;
@@ -46,6 +47,7 @@ void SignRecognition::performRecognition1() {
         values = layer12.forwardPropagation(values);
         values = layer13.forwardPropagation(values);
         values = layer14.forwardPropagation(values);
+        values = layer15.forwardPropagation(values);
         int max;
         int max2;
         values.maxCoeff(&max2, &max);
@@ -60,6 +62,7 @@ void SignRecognition::performRecognition1() {
         
         values(0, i%3) -= 1.0;
         
+        values = layer15.backwardPropagation(values);
         values = layer14.backwardPropagation(values);
         values = layer13.backwardPropagation(values);
         values = layer12.backwardPropagation(values);
@@ -80,7 +83,7 @@ void SignRecognition::performRecognition1() {
         layer7.adjustFilters();
         layer9.adjustFilters();
         layer12.adjustWeights();
-        layer13.adjustWeights();
+        layer14.adjustWeights();
     }
     std::cout << success << std::endl;
 }

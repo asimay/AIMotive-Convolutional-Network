@@ -15,13 +15,13 @@ Eigen::MatrixXf PoolingLayer::forwardPropagation(const Eigen::MatrixXf& input) {
     for (int x = 0; x < nextSize; x++) {
         for (int y = 0; y < nextSize; y++) {
             for (int depth = 0; depth < layerDepth; depth++) {
-                valueOutput(flatten2DCoordinates(x, y, nextSize), depth) = valueInput(flatten2DCoordinates(x * poolingSize, y * poolingSize, previousSize), depth);
-                maxIndices(flatten2DCoordinates(x, y, nextSize), depth) = flatten2DCoordinates(x * poolingSize, y * poolingSize, previousSize);
+                valueOutput(Layer3D::flatten2DCoordinates(x, y, nextSize), depth) = valueInput(Layer3D::flatten2DCoordinates(x * poolingSize, y * poolingSize, previousSize), depth);
+                maxIndices(Layer3D::flatten2DCoordinates(x, y, nextSize), depth) = Layer3D::flatten2DCoordinates(x * poolingSize, y * poolingSize, previousSize);
                 for (int shiftX = 0; shiftX < poolingSize; shiftX++) {
                     for(int shiftY = 0; shiftY < poolingSize; shiftY++) {
-                        if (valueInput(flatten2DCoordinates(x * poolingSize + shiftX, y * poolingSize + shiftY, previousSize), depth) > valueOutput(flatten2DCoordinates(x, y, nextSize), depth)) {
-                            valueOutput(flatten2DCoordinates(x, y, nextSize), depth) = valueInput(flatten2DCoordinates(x * poolingSize + shiftX, y * poolingSize + shiftY, previousSize), depth);
-                            maxIndices(flatten2DCoordinates(x, y, nextSize), depth) = flatten2DCoordinates(x * poolingSize + shiftX, y * poolingSize + shiftY, previousSize);
+                        if (valueInput(Layer3D::flatten2DCoordinates(x * poolingSize + shiftX, y * poolingSize + shiftY, previousSize), depth) > valueOutput(Layer3D::flatten2DCoordinates(x, y, nextSize), depth)) {
+                            valueOutput(Layer3D::flatten2DCoordinates(x, y, nextSize), depth) = valueInput(Layer3D::flatten2DCoordinates(x * poolingSize + shiftX, y * poolingSize + shiftY, previousSize), depth);
+                            maxIndices(Layer3D::flatten2DCoordinates(x, y, nextSize), depth) = Layer3D::flatten2DCoordinates(x * poolingSize + shiftX, y * poolingSize + shiftY, previousSize);
                         }
                     }
                 }
@@ -37,7 +37,7 @@ Eigen::MatrixXf PoolingLayer::backwardPropagation(const Eigen::MatrixXf& delta) 
     for (int x = 0; x < nextSize; x++) {
         for (int y = 0; y < nextSize; y++) {
             for (int depth = 0; depth < layerDepth; depth++) {
-                deltaOutput(maxIndices(flatten2DCoordinates(x, y, nextSize), depth), depth) = deltaInput(flatten2DCoordinates(x, y, nextSize), depth);
+                deltaOutput(maxIndices(Layer3D::flatten2DCoordinates(x, y, nextSize), depth), depth) = deltaInput(Layer3D::flatten2DCoordinates(x, y, nextSize), depth);
             }
         }
     }

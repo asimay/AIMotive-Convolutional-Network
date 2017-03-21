@@ -13,7 +13,7 @@
 #include "Layer3D.hpp"
 #include <iostream>
 
-class PoolingLayer : public Layer3D {
+class PoolingLayer {
 
 private:
     const std::string layerName;

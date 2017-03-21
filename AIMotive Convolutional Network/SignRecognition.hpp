@@ -17,7 +17,7 @@
 #include "SoftmaxLayer.hpp"
 
 #define FOLDER_PATH "/Users/pilinszki-nagycsongor/Developer/train-52x52/"
-#define LEARNING_RATE 0.001
+#define LEARNING_RATE 0.002
 
 class SignRecognition {
 private:

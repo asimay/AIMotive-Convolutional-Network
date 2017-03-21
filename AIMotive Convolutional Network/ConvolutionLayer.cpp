@@ -28,7 +28,7 @@ Eigen::MatrixXf ConvolutionLayer::flattenReceptiveFields(const Eigen::MatrixXf& 
                         newX = x * stride + shiftX - filterSize/2;
                         newY = y * stride + shiftY - filterSize/2;
                         if (newX < 0 || newX >= previousSize || newY < 0 || newY >= previousSize) break;
-                        flattenMatrix(flatten2DCoordinates(x, y, nextSize), flatten3DCoordinates(shiftX, shiftY, depth, filterSize, previousDepth)) = input(flatten2DCoordinates(newX, newY, previousSize), depth);
+                        flattenMatrix(Layer3D::flatten2DCoordinates(x, y, nextSize), Layer3D::flatten3DCoordinates(shiftX, shiftY, depth, filterSize, previousDepth)) = input(Layer3D::flatten2DCoordinates(newX, newY, previousSize), depth);
                     }
                 }
             }
@@ -57,7 +57,7 @@ Eigen::MatrixXf ConvolutionLayer::reorderReceptiveFields(const Eigen::MatrixXf& 
                         newX = x * stride + shiftX - filterSize/2;
                         newY = y * stride + shiftY - filterSize/2;
                         if (newX < 0 || newX >= previousSize || newY < 0 || newY >= previousSize) break;
-                        reorderMatrix(flatten2DCoordinates(newX, newY, previousSize), depth) += delta(flatten2DCoordinates(x, y, nextSize), flatten3DCoordinates(shiftX, shiftY, depth, filterSize, previousDepth));
+                        reorderMatrix(Layer3D::flatten2DCoordinates(newX, newY, previousSize), depth) += delta(Layer3D::flatten2DCoordinates(x, y, nextSize), Layer3D::flatten3DCoordinates(shiftX, shiftY, depth, filterSize, previousDepth));
                     }
                 }
             }

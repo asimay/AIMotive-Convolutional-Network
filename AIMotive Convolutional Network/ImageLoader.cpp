@@ -39,7 +39,7 @@ Eigen::MatrixXf ImageLoader::loadImage(std::string folderPath, int classNumber, 
     for (int x = 0; x < imageSize; x++) {
         for (int y = 0; y < imageSize; y++) {
             for (int color = 0; color < numberOfColors; color++) {
-                imageMatrix(flatten2DCoordinates(x, y, imageSize), color) = normalize ((float) imagePixels[flatten3DCoordinates(x, y, color, imageSize, numberOfColors)]);
+                imageMatrix(Layer3D::flatten2DCoordinates(x, y, imageSize), color) = normalize ((float) imagePixels[Layer3D::flatten3DCoordinates(x, y, color, imageSize, numberOfColors)]);
 
             }
         }
