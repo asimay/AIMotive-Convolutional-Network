@@ -68,7 +68,7 @@ Eigen::MatrixXf ConvolutionLayer::reorderReceptiveFields(const Eigen::MatrixXf& 
 
 void ConvolutionLayer::adjustFilters() {
     Eigen::MatrixXf delta = -valueInput.transpose() * deltaInput * learningRate;
-    layerFilters *= 0.9999;
+    //layerFilters *= 0.9999;
     layerFilters += delta;
 }
 
