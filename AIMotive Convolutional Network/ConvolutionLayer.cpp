@@ -66,70 +66,11 @@ Eigen::MatrixXf ConvolutionLayer::reorderReceptiveFields(const Eigen::MatrixXf& 
     return reorderMatrix;
 }
 
-/*Eigen::MatrixXf ConvolutionLayer::flattenMatrix(Eigen::MatrixXf* inputMatrix, int inputSize, int inputDepth, int filterSize, int stride) {
-    int flattenSize = (inputSize-1) / stride + 1;
-    Eigen::MatrixXf flattenMatrix = Eigen::MatrixXf::Zero(flattenSize * flattenSize, filterSize * filterSize * inputDepth);
-    
-    for (int inputX = 0; inputX < inputSize; inputX += stride) {
-        for (int inputY = 0; inputY < inputSize; inputY += stride) {
-            flattenMatrix.row(flatten2DCoordinates(inputX/stride, inputY/stride, flattenSize)) = flattenReceptiveField(inputMatrix, inputSize, inputDepth,  inputX, inputY, filterSize);
-        }
-    }
-    return flattenMatrix;
+void ConvolutionLayer::adjustFilters() {
+    Eigen::MatrixXf delta = -valueInput.transpose() * deltaInput * learningRate;
+    layerFilters *= 0.9999;
+    layerFilters += delta;
 }
-
-Eigen::VectorXf ConvolutionLayer::flattenReceptiveField(const Eigen::MatrixXf& input, int inputSize, int inputDepth, int inputX, int inputY, int filterSize) {
-    int newX;
-    int newY;
-    Eigen::VectorXf flattenField = Eigen::VectorXf::Zero(filterSize * filterSize * inputDepth);
-    
-    for (int fieldX = 0; fieldX < filterSize; fieldX++) {
-        for (int fieldY = 0; fieldY < filterSize; fieldY++) {
-            newX = inputX + fieldX - (int)filterSize/2;
-            newY = inputY + fieldY - (int)filterSize/2;
-            for (int depth = 0; depth < inputDepth; depth++) {
-                if (newX < 0 || newX >= inputSize || newY < 0 || newY >= inputSize) {
-                    break;
-                }
-                flattenField(flatten3DCoordinates(fieldX, fieldY, depth, filterSize, inputDepth)) = (*inputMatrix)(flatten2DCoordinates(newX, newY, inputSize), depth);
-            }
-        }
-    }
-    return flattenField;
-}
-
-void ConvolutionLayer::addBiasColumn(Eigen::MatrixXf* inputMatrix) {
-    inputMatrix->conservativeResize(inputMatrix->rows(), inputMatrix->cols() + 1);
-    inputMatrix->col(inputMatrix->cols() - 1) = Eigen::VectorXf::Ones(inputMatrix->rows());
-}
-
-Eigen::MatrixXf ConvolutionLayer::reorderMatrix(Eigen::MatrixXf *inputMatrix, int inputSize, int inputDepth, int filterSize, int stride) {
-    Eigen::MatrixXf reorderedMatrix = Eigen::MatrixXf::Zero(inputSize * inputSize, inputDepth);
-    for (int inputX = 0; inputX < inputSize; inputX += stride) {
-        for (int inputY = 0; inputY < inputSize; inputY += stride) {
-            reorderReceptiveField(inputMatrix, &reorderedMatrix, inputSize, inputDepth, inputX, inputY, filterSize, stride);
-        }
-    }
-    return reorderedMatrix;
-}
-
-void ConvolutionLayer::reorderReceptiveField(Eigen::MatrixXf *inputMatrix, Eigen::MatrixXf *outputMatrix, int inputSize, int inputDepth, int inputX, int inputY, int filterSize, int stride) {
-    int newX;
-    int newY;
-    
-    for (int fieldX = 0; fieldX < filterSize; fieldX++) {
-        for (int fieldY = 0; fieldY < filterSize; fieldY++) {
-            newX = inputX + fieldX - (int)filterSize/2;
-            newY = inputY + fieldY - (int)filterSize/2;
-            for (int depth = 0; depth < inputDepth; depth++) {
-                if (newX < 0 || newX >= inputSize || newY < 0 || newY >= inputSize) {
-                    break;
-                }
-                (*outputMatrix)(flatten2DCoordinates(newX, newY, inputSize), depth) += (*inputMatrix)(flatten2DCoordinates(inputX/stride, inputY/stride, (inputSize - 1) / stride + 1), flatten3DCoordinates(fieldX, fieldY, depth, filterSize, inputDepth));
-            }
-        }
-    }
-}*/
 
 
 
