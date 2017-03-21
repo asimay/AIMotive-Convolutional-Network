@@ -16,58 +16,36 @@
 class ConvolutionLayer : public Layer3D {
     
 private:
+    const std::string layerName;
     
-    Layer3D* previousLayer;
-    Layer3D* nextLayer;
+    const int previousSize;
+    const int previousDepth;
+    const int nextSize;
+    const int filterSize;
+    const int filterNumber;
+    const int stride;
+    const float learningRate;
     
-    int imageSize;
-    int filterSize;
-    int filterNumber;
-    int stride;
-    
-    Eigen::MatrixXf filterMatrix;
-    Eigen::MatrixXf inputMatrix;
-    Eigen::MatrixXf outputMatrix;
-    Eigen::MatrixXf deltaInputMatrix;
-    Eigen::MatrixXf deltaOutputMatrix;
+    Eigen::MatrixXf layerFilters;
+    Eigen::MatrixXf valueInput;
+    Eigen::MatrixXf valueOutput;
+    Eigen::MatrixXf deltaInput;
+    Eigen::MatrixXf deltaOutput;
     
 public:
     
-    ConvolutionLayer(int filterSize, int filterNumber, int stride);
-    ~ConvolutionLayer();
-    
-    static Eigen::MatrixXf flattenMatrix(Eigen::MatrixXf* inputMatrix, int inputSize, int inputDepth, int filterSize, int stride);
-    static Eigen::VectorXf flattenReceptiveField(Eigen::MatrixXf* inputMatrix, int inputSize, int inputDepth, int inputX, int inputY, int filterSize);
-    static void addBiasColumn(Eigen::MatrixXf* inputMatrix);
-    static Eigen::MatrixXf reorderMatrix(Eigen::MatrixXf* inputMatrix, int inputSize, int inputDepth, int filterSize, int stride);
-    static void reorderReceptiveField(Eigen::MatrixXf* inputMatrix, Eigen::MatrixXf* outputMatrix, int inputSize, int inputDepth, int inputX, int inputY, int filterSize, int stride);
-    
-    int getSize() { return imageSize; }
-    int getDepth() { return filterNumber; }
-    int getFilterSize() { return filterSize; }
-    int getFilterNumber() { return filterNumber; }
-    int getStride() { return stride; }
-    
-    
-    Eigen::MatrixXf* getFilter() { return &filterMatrix; }
-    Eigen::MatrixXf* getInput() { return &inputMatrix; }
-    Eigen::MatrixXf* getOutput() { return &outputMatrix; }
-    Eigen::MatrixXf* getDeltaInput() { return &deltaInputMatrix; }
-    Eigen::MatrixXf* getDeltaOutput() { return &deltaOutputMatrix; }
-    
-    void setPreviousLayer(Layer3D* previousLayer) {
-        this->previousLayer = previousLayer;
-        //previousLayer->setNextLayer(this);
-        //imageSize = (previousLayer->getSize() - 1) / stride + 1;
-        //filterMatrix = Eigen::MatrixXf::Random(filterSize * filterSize * previousLayer->getDepth() + 1, filterNumber);
+    ConvolutionLayer() : layerName(""), previousSize(0), previousDepth(0),  nextSize(0), filterSize(0), filterNumber(0), stride(0), learningRate(0.0), layerFilters(Eigen::MatrixXf()), valueInput(Eigen::MatrixXf()), valueOutput(Eigen::MatrixXf()), deltaInput(Eigen::MatrixXf()), deltaOutput(Eigen::MatrixXf()) {}
+    ConvolutionLayer(std::string layerName, int previousSize, int previousDepth, int nextSize, int filterSize, int filterNumber, int stride, float learningRate) : layerName(layerName), previousSize(previousSize), previousDepth(previousDepth), nextSize(nextSize), filterSize(filterSize), filterNumber(filterNumber), stride(stride), learningRate(learningRate), layerFilters(Eigen::MatrixXf()), valueInput(Eigen::MatrixXf()), valueOutput(Eigen::MatrixXf()), deltaInput(Eigen::MatrixXf()), deltaOutput(Eigen::MatrixXf()) {
+        layerFilters = Eigen::MatrixXf::Random(filterSize * filterSize * previousDepth + 1, filterNumber) * sqrt(2.0/(filterSize * filterSize * previousDepth + 1) / filterNumber) / filterSize;
     }
+    ~ConvolutionLayer() {}
     
-    void setNextLayer(Layer3D* nextLayer) {
-        this->nextLayer = nextLayer;
-    }
+    Eigen::MatrixXf forwardPropagation(const Eigen::MatrixXf& input);
+    Eigen::MatrixXf backwardPropagation(const Eigen::MatrixXf& delta);
     
-    void forwardPropagation();
-    void backwardPropagation();
+    Eigen::MatrixXf flattenReceptiveFields(const Eigen::MatrixXf& input);
+    Eigen::MatrixXf reorderReceptiveFields(const Eigen::MatrixXf& delta);
+    void adjustFilters();
     
 };
 

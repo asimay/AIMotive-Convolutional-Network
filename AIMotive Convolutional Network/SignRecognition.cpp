@@ -7,9 +7,3 @@
 //
 
 #include "SignRecognition.hpp"
-
-SignRecognition::SignRecognition() {
-}
-
-SignRecognition::~SignRecognition() {
-}

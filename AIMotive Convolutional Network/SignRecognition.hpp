@@ -14,8 +14,7 @@ class SignRecognition {
 private:
     
 public:
-    SignRecognition();
-    ~SignRecognition();
+    
 };
 
 #endif /* SignRecognition_hpp */

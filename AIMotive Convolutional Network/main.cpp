@@ -29,6 +29,14 @@
 int main(int argc, const char * argv[]) {
     srand((unsigned int)time(NULL));
     
+    ConvolutionLayer layer("", 4, 3, 4, 1, 3, 1, 0.01);
+    Eigen::MatrixXf input = Eigen::MatrixXf::Random(16, 3);
+    input += Eigen::MatrixXf::Ones(16, 3) * 0.01;
+    Eigen::MatrixXf output = input;
+    //input << 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16;
+    layer.backwardPropagation(layer.forwardPropagation(input));
+    layer.adjustFilters();
+    
     return 0;
     
 }
