@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <Eigen>
 #include <iostream>
+#include <random>
 
 class FullyConnectedLayer {
 private:
@@ -30,7 +31,15 @@ private:
 public:
     FullyConnectedLayer() : layerName(""), layerSize(0), previousLayerSize(0), learningRate(0.0), valueInput(Eigen::MatrixXf()), valueOutput(Eigen::MatrixXf()), layerWeights(Eigen::MatrixXf()), deltaInput(Eigen::MatrixXf()), deltaOutput(Eigen::MatrixXf()) {}
     FullyConnectedLayer(std::string layerName, int layerSize, int previousLayerSize, float learningRate) : layerName(layerName), layerSize(layerSize), previousLayerSize(previousLayerSize), learningRate(learningRate), valueInput(Eigen::MatrixXf()), valueOutput(Eigen::MatrixXf()), layerWeights(Eigen::MatrixXf()), deltaInput(Eigen::MatrixXf()), deltaOutput(Eigen::MatrixXf()) {
-        layerWeights = Eigen::MatrixXf::Random(previousLayerSize + 1, layerSize) * sqrt(2.0/layerSize);
+        
+        layerWeights = Eigen::MatrixXf::Zero(previousLayerSize + 1, layerSize);
+        std::default_random_engine generator;
+        std::normal_distribution<float> distribution(0.0, 1.0);
+        for (int row = 0; row < layerWeights.rows(); row++) {
+            for (int col = 0; col < layerWeights.cols(); col++) {
+                layerWeights(row, col) = distribution(generator) * sqrt(2.0 / layerWeights.rows());
+            }
+        }
     }
     ~FullyConnectedLayer() {}
     

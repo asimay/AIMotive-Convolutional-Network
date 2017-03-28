@@ -68,7 +68,15 @@ Eigen::MatrixXf ConvolutionLayer::reorderReceptiveFields(const Eigen::MatrixXf& 
 
 void ConvolutionLayer::adjustFilters() {
     Eigen::MatrixXf delta = -valueInput.transpose() * deltaInput * learningRate;
-    //layerFilters *= 0.9999;
+    Eigen::MatrixXf deltaWeightProportion = delta;
+    for (int row = 0; row < deltaWeightProportion.rows(); row++) {
+        for (int col = 0; col < deltaWeightProportion.cols() ; col++) {
+            deltaWeightProportion(row, col) /= layerFilters(row, col);
+        }
+    }
+    deltaWeightProportion.cwiseAbs();
+    //std::cout << layerName << ", min: " << deltaWeightProportion.minCoeff() << ", mean: " << deltaWeightProportion.mean() << ", max: " << deltaWeightProportion.maxCoeff() << std::endl;
+    layerFilters *= 0.9999;
     layerFilters += delta;
 }
 
