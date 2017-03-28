@@ -8,6 +8,57 @@
 
 #include "SignRecognition.hpp"
 
+void SignRecognition::performSimpleRecognition() {
+    ImageLoader imageLoader = ImageLoader(NUMBER_OF_CLASSES, NUMBER_OF_IMAGES, IMAGE_SIZE, NUMBER_OF_COLORS);
+    ConvolutionLayer layer1 = ConvolutionLayer("1st layer", 52, 3, 52, 3, 48, 1, LEARNING_RATE);
+    PoolingLayer layer2 = PoolingLayer("2nd layer", 52, 26, 2, 48);
+    ReLULayer layer3 = ReLULayer("3rd layer");
+    FullyConnectedLayer layer4 = FullyConnectedLayer("4th layer", 100, 26*26*48, LEARNING_RATE);
+    ReLULayer layer5 = ReLULayer("5th layer");
+    FullyConnectedLayer layer6 = FullyConnectedLayer("6th layer", 12, 100, LEARNING_RATE);
+    SoftmaxLayer layer7 = SoftmaxLayer("7th layer");
+    
+    imageLoader.loadImages(FOLDER_PATH);
+    int numberOfTrainingImages = (int)(NUMBER_OF_IMAGES * 0.8);
+    float loss = 2.0;
+    for (int epoch = 0; epoch < 10; epoch++) {
+        for (int imageNumber = 0; imageNumber < numberOfTrainingImages; imageNumber++) {
+            for (int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {
+                Eigen::MatrixXf values = imageLoader.getImageMatrix(classNumber, imageNumber);
+                values = layer1.forwardPropagation(values);
+                values = layer2.forwardPropagation(values);
+                values = layer3.forwardPropagation(values);
+                values.resize(1, 26*26*48);
+                values = layer4.forwardPropagation(values);
+                values = layer5.forwardPropagation(values);
+                values = layer6.forwardPropagation(values);
+                values = layer7.forwardPropagation(values);
+                
+                loss = 0.99 * loss + 0.01 * -1.0 * std::log(values(0, classNumber));
+                std::cout << "Epoch: " << epoch << ", Image: " << imageNumber << ", Answer: " << classNumber + 1 << ", Prediction: " << values(0, classNumber) << ", Current loss: " << -1.0 * std::log(values(0, classNumber)) << ", Loss: " << loss << std::endl;
+                
+                values(0, classNumber) -= 1.0;
+                values = layer7.backwardPropagation(values);
+                values = layer6.backwardPropagation(values);
+                values = layer5.backwardPropagation(values);
+                values = layer4.backwardPropagation(values);
+                values.resize(26*26, 48);
+                values = layer3.backwardPropagation(values);
+                values = layer2.backwardPropagation(values);
+                values = layer1.backwardPropagation(values);
+                
+                layer1.adjustFilters();
+                layer4.adjustWeights();
+                layer6.adjustWeights();
+                
+                if (loss < 0.3) break;
+                                                                                                                                                  
+            }
+        }
+    }
+
+}
+
 void SignRecognition::performRecognition1() {
     
     ImageLoader imageLoader = ImageLoader(NUMBER_OF_CLASSES, NUMBER_OF_IMAGES, IMAGE_SIZE, NUMBER_OF_COLORS);
