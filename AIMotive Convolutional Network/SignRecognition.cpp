@@ -20,7 +20,7 @@ void SignRecognition::performSimpleRecognition() {
     
     imageLoader.loadImages(FOLDER_PATH);
     int numberOfTrainingImages = (int)(NUMBER_OF_IMAGES * 0.8);
-    float loss = 0.5;
+    float loss = 0.0;
     for (int epoch = 0; epoch < 10; epoch++) {
         for (int imageNumber = 0; imageNumber < numberOfTrainingImages; imageNumber++) {
             for (int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {
@@ -50,8 +50,6 @@ void SignRecognition::performSimpleRecognition() {
                 layer1.adjustFilters();
                 layer4.adjustWeights();
                 layer6.adjustWeights();
-                
-                if (loss < 0.3) break;
                                                                                                                                                   
             }
         }
@@ -84,7 +82,7 @@ void SignRecognition::performSimpleRecognition() {
 
 }
 
-void SignRecognition::performRecognition1() {
+void SignRecognition::performAdvancedRecognition() {
     
     ImageLoader imageLoader = ImageLoader(NUMBER_OF_CLASSES, NUMBER_OF_IMAGES, IMAGE_SIZE, NUMBER_OF_COLORS);
     ConvolutionLayer layer1 = ConvolutionLayer("1st layer", 52, 3, 52, 3, 6, 1, LEARNING_RATE);
@@ -106,11 +104,11 @@ void SignRecognition::performRecognition1() {
     imageLoader.loadImages(FOLDER_PATH);
     int numberOfTrainingImages = (int)(NUMBER_OF_IMAGES * 0.8);
     float loss = 0.0;
-    for (int epoch = 0; epoch < 1; epoch++) {
+    for (int epoch = 0; epoch < 10; epoch++) {
         for (int imageNumber = 0; imageNumber < numberOfTrainingImages; imageNumber++) {
-            if (imageNumber % 10 == 9) loss = 0.0;
             for (int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {
                 Eigen::MatrixXf values = imageLoader.getImageMatrix(classNumber, imageNumber);
+                
                 values = layer1.forwardPropagation(values);
                 values = layer2.forwardPropagation(values);
                 values = layer3.forwardPropagation(values);
@@ -128,7 +126,8 @@ void SignRecognition::performRecognition1() {
                 values = layer14.forwardPropagation(values);
                 values = layer15.forwardPropagation(values);
                 
-                loss += -1.0 * std::log(values(0, classNumber));
+                loss = 0.99 * loss + 0.01 * -1.0 * std::log(values(0, classNumber));
+                std::cout << "Epoch: " << epoch+1 << ", Image: " << imageNumber+1 << ", Answer: " << classNumber + 1 << ", Prediction: " << values(0, classNumber) << ", Current loss: " << -1.0 * std::log(values(0, classNumber)) << ", Accumulated loss: " << loss << std::endl;
                 
                 values(0, classNumber) -= 1.0;
                 
@@ -155,11 +154,10 @@ void SignRecognition::performRecognition1() {
                 layer12.adjustWeights();
                 layer14.adjustWeights();
             }
-            if (imageNumber% 10 == 9) std::cout << "Loss: " << loss / NUMBER_OF_CLASSES / 10 << std::endl;
         }
     }
     
-    std::vector<int> matchNumbers = std::vector<int>(12);
+    std::vector<int> matchNumbers = std::vector<int>(NUMBER_OF_CLASSES);
     for (int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {
         for (int imageNumber = numberOfTrainingImages; imageNumber < NUMBER_OF_IMAGES; imageNumber++) {
             Eigen::MatrixXf values = imageLoader.getImageMatrix(classNumber, imageNumber);
@@ -186,8 +184,9 @@ void SignRecognition::performRecognition1() {
             if (maxCol == classNumber) matchNumbers[classNumber]++;
         }
     }
-    std::cout << "Sum: " << std::accumulate(matchNumbers.begin(), matchNumbers.end(), 0) << std::endl;
-    for (int classNumber = 0; classNumber < 12; classNumber++) {
-        std::cout << classNumber+1 << ": " << matchNumbers[classNumber] << std::endl;
+    int sum = std::accumulate(matchNumbers.begin(), matchNumbers.end(), 0);
+    std::cout << "Overall accuracy: " << (float)sum / (0.2 * NUMBER_OF_IMAGES) / NUMBER_OF_CLASSES * 100.0 << "%" << std::endl;
+    for (int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {
+        std::cout << classNumber+1 << ": " << (float)matchNumbers[classNumber] / (0.2 * NUMBER_OF_IMAGES) * 100.0 << "%" << std::endl;
     }
 }

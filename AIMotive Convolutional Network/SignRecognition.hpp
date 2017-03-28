@@ -19,7 +19,7 @@
 #define FOLDER_PATH "/Users/pilinszki-nagycsongor/Developer/train-52x52/"
 #define LEARNING_RATE 0.001
 #define NUMBER_OF_CLASSES 12
-#define NUMBER_OF_IMAGES 100
+#define NUMBER_OF_IMAGES 5000
 #define IMAGE_SIZE 52
 #define NUMBER_OF_COLORS 3
 
@@ -29,7 +29,7 @@ private:
     
 public:
     
-    static void performRecognition1();
+    static void performAdvancedRecognition();
     static void performSimpleRecognition();
     
 };
