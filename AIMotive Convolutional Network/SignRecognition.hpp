@@ -17,9 +17,9 @@
 #include "SoftmaxLayer.hpp"
 
 #define FOLDER_PATH "/Users/pilinszki-nagycsongor/Developer/train-52x52/"
-#define LEARNING_RATE 0.005
-#define NUMBER_OF_CLASSES 12
-#define NUMBER_OF_IMAGES 1000
+#define LEARNING_RATE 0.001
+#define NUMBER_OF_CLASSES 6
+#define NUMBER_OF_IMAGES 50
 #define IMAGE_SIZE 52
 #define NUMBER_OF_COLORS 3
 
@@ -30,6 +30,7 @@ private:
 public:
     
     static void performRecognition1();
+    static void performSimpleRecognition();
     
 };
 
