@@ -10,7 +10,7 @@
 
 void SignRecognition::performRecognition1() {
     
-    ImageLoader imageLoader = ImageLoader(3, 5000, 52, 3);
+    ImageLoader imageLoader = ImageLoader(NUMBER_OF_CLASSES, NUMBER_OF_IMAGES, IMAGE_SIZE, NUMBER_OF_COLORS);
     ConvolutionLayer layer1 = ConvolutionLayer("1st layer", 52, 3, 52, 3, 6, 1, LEARNING_RATE);
     PoolingLayer layer2 = PoolingLayer("2nd layer", 52, 26, 2, 6);
     ReLULayer layer3 = ReLULayer("3rd layer");
@@ -27,63 +27,91 @@ void SignRecognition::performRecognition1() {
     FullyConnectedLayer layer14 = FullyConnectedLayer("14th layer", 12, 48, LEARNING_RATE);
     SoftmaxLayer layer15 = SoftmaxLayer("15th layer");
     
-    
-    int success = 0;
     imageLoader.loadImages(FOLDER_PATH);
-    for (int i = 0; i < 2000; i++) {
-        Eigen::MatrixXf values = imageLoader.getImageMatrix(i%3, i);
-        values = layer1.forwardPropagation(values);
-        values = layer2.forwardPropagation(values);
-        values = layer3.forwardPropagation(values);
-        values = layer4.forwardPropagation(values);
-        values = layer5.forwardPropagation(values);
-        values = layer6.forwardPropagation(values);
-        values = layer7.forwardPropagation(values);
-        values = layer8.forwardPropagation(values);
-        values = layer9.forwardPropagation(values);
-        values = layer10.forwardPropagation(values);
-        values = layer11.forwardPropagation(values);
-        values.resize(1, 2 * 2 * 48);
-        values = layer12.forwardPropagation(values);
-        values = layer13.forwardPropagation(values);
-        values = layer14.forwardPropagation(values);
-        values = layer15.forwardPropagation(values);
-        int max;
-        int max2;
-        values.maxCoeff(&max2, &max);
-        std::cout << "Answer: " << i%3 << " Predicted: " << max <<std::endl;
-        std::cout << values << std::endl;
-        
-        int row;
-        int col;
-        values.maxCoeff(&row, &col);
-        if (col == i%3) success++;
-        
-        
-        values(0, i%3) -= 1.0;
-        
-        values = layer15.backwardPropagation(values);
-        values = layer14.backwardPropagation(values);
-        values = layer13.backwardPropagation(values);
-        values = layer12.backwardPropagation(values);
-        values.resize(2 * 2, 48);
-        values = layer11.backwardPropagation(values);
-        values = layer10.backwardPropagation(values);
-        values = layer9.backwardPropagation(values);
-        values = layer8.backwardPropagation(values);
-        values = layer7.backwardPropagation(values);
-        values = layer6.backwardPropagation(values);
-        values = layer5.backwardPropagation(values);
-        values = layer4.backwardPropagation(values);
-        values = layer3.backwardPropagation(values);
-        values = layer2.backwardPropagation(values);
-        values = layer1.backwardPropagation(values);
-        layer1.adjustFilters();
-        layer4.adjustFilters();
-        layer7.adjustFilters();
-        layer9.adjustFilters();
-        layer12.adjustWeights();
-        layer14.adjustWeights();
+    int numberOfTrainingImages = (int)(NUMBER_OF_IMAGES * 0.8);
+    float loss = 0.0;
+    for (int epoch = 0; epoch < 1; epoch++) {
+        for (int imageNumber = 0; imageNumber < numberOfTrainingImages; imageNumber++) {
+            if (imageNumber % 10 == 9) loss = 0.0;
+            for (int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {
+                Eigen::MatrixXf values = imageLoader.getImageMatrix(classNumber, imageNumber);
+                values = layer1.forwardPropagation(values);
+                values = layer2.forwardPropagation(values);
+                values = layer3.forwardPropagation(values);
+                values = layer4.forwardPropagation(values);
+                values = layer5.forwardPropagation(values);
+                values = layer6.forwardPropagation(values);
+                values = layer7.forwardPropagation(values);
+                values = layer8.forwardPropagation(values);
+                values = layer9.forwardPropagation(values);
+                values = layer10.forwardPropagation(values);
+                values = layer11.forwardPropagation(values);
+                values.resize(1, 2 * 2 * 48);
+                values = layer12.forwardPropagation(values);
+                values = layer13.forwardPropagation(values);
+                values = layer14.forwardPropagation(values);
+                values = layer15.forwardPropagation(values);
+                
+                loss += -1.0 * std::log(values(0, classNumber));
+                
+                values(0, classNumber) -= 1.0;
+                
+                values = layer15.backwardPropagation(values);
+                values = layer14.backwardPropagation(values);
+                values = layer13.backwardPropagation(values);
+                values = layer12.backwardPropagation(values);
+                values.resize(2 * 2, 48);
+                values = layer11.backwardPropagation(values);
+                values = layer10.backwardPropagation(values);
+                values = layer9.backwardPropagation(values);
+                values = layer8.backwardPropagation(values);
+                values = layer7.backwardPropagation(values);
+                values = layer6.backwardPropagation(values);
+                values = layer5.backwardPropagation(values);
+                values = layer4.backwardPropagation(values);
+                values = layer3.backwardPropagation(values);
+                values = layer2.backwardPropagation(values);
+                values = layer1.backwardPropagation(values);
+                layer1.adjustFilters();
+                layer4.adjustFilters();
+                layer7.adjustFilters();
+                layer9.adjustFilters();
+                layer12.adjustWeights();
+                layer14.adjustWeights();
+            }
+            if (imageNumber% 10 == 9) std::cout << "Loss: " << loss / NUMBER_OF_CLASSES / 10 << std::endl;
+        }
     }
-    std::cout << success << std::endl;
+    
+    std::vector<int> matchNumbers = std::vector<int>(12);
+    for (int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {
+        for (int imageNumber = numberOfTrainingImages; imageNumber < NUMBER_OF_IMAGES; imageNumber++) {
+            Eigen::MatrixXf values = imageLoader.getImageMatrix(classNumber, imageNumber);
+            values = layer1.forwardPropagation(values);
+            values = layer2.forwardPropagation(values);
+            values = layer3.forwardPropagation(values);
+            values = layer4.forwardPropagation(values);
+            values = layer5.forwardPropagation(values);
+            values = layer6.forwardPropagation(values);
+            values = layer7.forwardPropagation(values);
+            values = layer8.forwardPropagation(values);
+            values = layer9.forwardPropagation(values);
+            values = layer10.forwardPropagation(values);
+            values = layer11.forwardPropagation(values);
+            values.resize(1, 2 * 2 * 48);
+            values = layer12.forwardPropagation(values);
+            values = layer13.forwardPropagation(values);
+            values = layer14.forwardPropagation(values);
+            values = layer15.forwardPropagation(values);
+            
+            int maxRow;
+            int maxCol;
+            values.maxCoeff(&maxRow, &maxCol);
+            if (maxCol == classNumber) matchNumbers[classNumber]++;
+        }
+    }
+    std::cout << "Sum: " << std::accumulate(matchNumbers.begin(), matchNumbers.end(), 0) << std::endl;
+    for (int classNumber = 0; classNumber < 12; classNumber++) {
+        std::cout << classNumber+1 << ": " << matchNumbers[classNumber] << std::endl;
+    }
 }

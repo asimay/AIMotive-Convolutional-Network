@@ -26,6 +26,14 @@ Eigen::MatrixXf FullyConnectedLayer::backwardPropagation(const Eigen::MatrixXf& 
 
 void FullyConnectedLayer::adjustWeights() {
     Eigen::MatrixXf delta = -valueInput.transpose() * deltaInput * learningRate;
-    //layerWeights *= 0.9999;
+    Eigen::MatrixXf deltaWeightProportion = delta;
+    for (int row = 0; row < deltaWeightProportion.rows(); row++) {
+        for (int col = 0; col < deltaWeightProportion.cols() ; col++) {
+            deltaWeightProportion(row, col) /= layerWeights(row, col);
+        }
+    }
+    deltaWeightProportion.cwiseAbs();
+    //std::cout << layerName << ", min: " << deltaWeightProportion.minCoeff() << ", mean: " << deltaWeightProportion.mean() << ", max: " << deltaWeightProportion.maxCoeff() << std::endl;
+    layerWeights *= 0.9999;
     layerWeights += delta;
 }
