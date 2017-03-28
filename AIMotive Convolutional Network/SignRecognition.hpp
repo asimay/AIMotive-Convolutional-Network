@@ -18,8 +18,8 @@
 
 #define FOLDER_PATH "/Users/pilinszki-nagycsongor/Developer/train-52x52/"
 #define LEARNING_RATE 0.001
-#define NUMBER_OF_CLASSES 6
-#define NUMBER_OF_IMAGES 50
+#define NUMBER_OF_CLASSES 12
+#define NUMBER_OF_IMAGES 100
 #define IMAGE_SIZE 52
 #define NUMBER_OF_COLORS 3
 

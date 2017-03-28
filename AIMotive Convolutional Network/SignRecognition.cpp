@@ -20,7 +20,7 @@ void SignRecognition::performSimpleRecognition() {
     
     imageLoader.loadImages(FOLDER_PATH);
     int numberOfTrainingImages = (int)(NUMBER_OF_IMAGES * 0.8);
-    float loss = 2.0;
+    float loss = 0.5;
     for (int epoch = 0; epoch < 10; epoch++) {
         for (int imageNumber = 0; imageNumber < numberOfTrainingImages; imageNumber++) {
             for (int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {
@@ -35,7 +35,7 @@ void SignRecognition::performSimpleRecognition() {
                 values = layer7.forwardPropagation(values);
                 
                 loss = 0.99 * loss + 0.01 * -1.0 * std::log(values(0, classNumber));
-                std::cout << "Epoch: " << epoch << ", Image: " << imageNumber << ", Answer: " << classNumber + 1 << ", Prediction: " << values(0, classNumber) << ", Current loss: " << -1.0 * std::log(values(0, classNumber)) << ", Loss: " << loss << std::endl;
+                std::cout << "Epoch: " << epoch+1 << ", Image: " << imageNumber+1 << ", Answer: " << classNumber + 1 << ", Prediction: " << values(0, classNumber) << ", Current loss: " << -1.0 * std::log(values(0, classNumber)) << ", Accumulated loss: " << loss << std::endl;
                 
                 values(0, classNumber) -= 1.0;
                 values = layer7.backwardPropagation(values);
@@ -55,6 +55,31 @@ void SignRecognition::performSimpleRecognition() {
                                                                                                                                                   
             }
         }
+    }
+    
+    int maxRow;
+    int maxCol;
+    std::vector<int> matchNumbers = std::vector<int>(NUMBER_OF_CLASSES);
+    for (int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {
+        for (int imageNumber = numberOfTrainingImages; imageNumber < NUMBER_OF_IMAGES; imageNumber++) {
+            Eigen::MatrixXf values = imageLoader.getImageMatrix(classNumber, imageNumber);
+            values = layer1.forwardPropagation(values);
+            values = layer2.forwardPropagation(values);
+            values = layer3.forwardPropagation(values);
+            values.resize(1, 26*26*48);
+            values = layer4.forwardPropagation(values);
+            values = layer5.forwardPropagation(values);
+            values = layer6.forwardPropagation(values);
+            values = layer7.forwardPropagation(values);
+            
+            values.maxCoeff(&maxRow, &maxCol);
+            if (maxCol == classNumber) matchNumbers[classNumber]++;
+        }
+    }
+    int sum = std::accumulate(matchNumbers.begin(), matchNumbers.end(), 0);
+    std::cout << "Overall accuracy: " << (float)sum / (0.2 * NUMBER_OF_IMAGES) / NUMBER_OF_CLASSES * 100.0 << "%" << std::endl;
+    for (int classNumber = 0; classNumber < NUMBER_OF_CLASSES; classNumber++) {
+        std::cout << classNumber+1 << ": " << (float)matchNumbers[classNumber] / (0.2 * NUMBER_OF_IMAGES) * 100.0 << "%" << std::endl;
     }
 
 }
